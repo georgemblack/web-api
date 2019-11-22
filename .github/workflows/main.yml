@@ -1,0 +1,16 @@
+name: Build and Deploy
+
+on: [push]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cloud Run Deploy
+      uses: ./.github/actions/cloud-run-deploy
+      with:
+        imageName: web-collector
+        gcloudProjectId: ${{ secrets.GCLOUD_PROJECT_ID }}
+      env:
+        GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}

@@ -1,0 +1,11 @@
+{
+  "name": "web-collector",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:georgemblack/web-collector.git",
+  "author": "georgemblack <contact@georgeblack.me>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

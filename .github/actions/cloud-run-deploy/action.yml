@@ -1,0 +1,11 @@
+name: 'Cloud Run Deploy'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+inputs:
+  imageName:
+    description: 'Name of image to push'
+    required: true
+  gcloudProjectId:
+    description: 'Google Cloud project ID'
+    required: true
