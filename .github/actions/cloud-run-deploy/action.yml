@@ -9,3 +9,6 @@ inputs:
   gcloudProjectId:
     description: 'Google Cloud project ID'
     required: true
+  gcloudServiceAccount:
+    description: 'Email address of Google Cloud service account'
+    required: true
