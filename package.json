@@ -6,6 +6,7 @@
   "author": "georgemblack <contact@georgeblack.me>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "firebase-admin": "^8.8.0"
   }
 }
