@@ -10,7 +10,7 @@ sanitize() {
   fi
 }
 
-sanitize "${INPUT_IMAGENAME}" "image-name"
+sanitize "${INPUT_SERVICENAME}" "image-name"
 sanitize "${INPUT_GCLOUDPROJECTID}" "gcloud-project-id"
 sanitize "${GCLOUD_AUTH}" "gcloud-auth"
 
@@ -25,4 +25,7 @@ gcloud auth activate-service-account --key-file=./key.json
 rm ./key.json
 
 # Submit build
-gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_IMAGENAME}:latest
+gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:latest
+
+# Deploy
+gcloud run deploy ${INPUT_SERVICENAME} --image gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:latest

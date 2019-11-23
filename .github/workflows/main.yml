@@ -10,7 +10,7 @@ jobs:
     - name: Cloud Run Deploy
       uses: ./.github/actions/cloud-run-deploy
       with:
-        imageName: web-collector
+        serviceName: web-collector
         gcloudProjectId: ${{ secrets.GCLOUD_PROJECT_ID }}
       env:
         GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}

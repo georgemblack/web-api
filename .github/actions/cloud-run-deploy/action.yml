@@ -3,7 +3,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
 inputs:
-  imageName:
+  serviceName:
     description: 'Name of image to push'
     required: true
   gcloudProjectId:
