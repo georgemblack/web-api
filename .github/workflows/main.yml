@@ -10,8 +10,9 @@ jobs:
     - name: Cloud Run Deploy
       uses: ./.github/actions/cloud-run-deploy
       with:
-        serviceName: web-collector
+        serviceName: personal-web-api
         gcloudProjectId: ${{ secrets.GCLOUD_PROJECT_ID }}
         gcloudServiceAccount: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+        gcloudRuntimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
       env:
         GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}

@@ -13,6 +13,7 @@ sanitize() {
 sanitize "${INPUT_SERVICENAME}" "image-name"
 sanitize "${INPUT_GCLOUDPROJECTID}" "gcloudProjectId"
 sanitize "${INPUT_GCLOUDSERVICEACCOUNT}" "gcloudServiceAccount"
+sanitize "${INPUT_GCLOUDRUNTIMESERVICEACCOUNT}" "gcloudRuntimeServiceAccount"
 sanitize "${GCLOUD_AUTH}" "GCLOUD_AUTH"
 
 cd ${GITHUB_WORKSPACE}
@@ -33,6 +34,6 @@ gcloud run deploy ${INPUT_SERVICENAME} \
   --memory 128Mi \
   --platform managed \
   --allow-unauthenticated \
-  --service-account ${INPUT_GCLOUDSERVICEACCOUNT} \
+  --service-account ${INPUT_GCLOUDRUNTIMESERVICEACCOUNT} \
   --region us-central1 \
   --image gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:latest
