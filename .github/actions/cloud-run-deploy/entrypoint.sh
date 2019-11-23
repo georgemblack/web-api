@@ -31,6 +31,8 @@ gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:
 
 # Deploy
 gcloud run deploy ${INPUT_SERVICENAME} \
+  --concurrency 20 \
+  --max-instances 1000 \
   --memory 128Mi \
   --platform managed \
   --allow-unauthenticated \
