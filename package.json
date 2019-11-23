@@ -5,8 +5,20 @@
   "repository": "git@github.com:georgemblack/web-collector.git",
   "author": "georgemblack <contact@georgeblack.me>",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./index.js",
+    "lint:fix": "eslint --fix ./index.js"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "firebase-admin": "^8.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }
