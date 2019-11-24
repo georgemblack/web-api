@@ -15,6 +15,13 @@ const port = process.env.PORT
 
 app.get('/', (req, res) => res.send('Hello, Cloud Run!'))
 
+app.options('/*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
+  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
+  res.send(200)
+})
+
 app.post('/views', (req, res) => {
   // if (req.hostname !== 'georgeblack.me') {
   //   res.status(403).send('Wrong hostname')
