@@ -49,9 +49,6 @@ app.post('/views', (req, res) => {
     userAgent: req.body.userAgent,
     hostname: req.body.hostname,
     pathname: req.body.pathname,
-    ipAddress: req.ip,
-    forwardedIpAddress: req.headers['X-Forwarded-For'],
-    remoteAddress: req.connection.remoteAddress,
     windowInnerWidth: req.body.windowInnerWidth,
     timezone: req.body.timezone,
     timestamp: new Date().toISOString()
