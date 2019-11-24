@@ -49,13 +49,14 @@ app.post('/views', (req, res) => {
     userAgent: req.body.userAgent,
     hostname: req.body.hostname,
     pathname: req.body.pathname,
+    ipAddress: req.ip,
     windowInnerWidth: req.body.windowInnerWidth,
     timezone: req.body.timezone,
     timestamp: new Date().toISOString()
   }
 
   // append referrer if non-empty
-  if (req.body.referrer !== '') { docPayload.referrer = req.body.referrer }
+  if (req.body.referrer !== '') docPayload.referrer = req.body.referrer
 
   // write to firestore
   try {
