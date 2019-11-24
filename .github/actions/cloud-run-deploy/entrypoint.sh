@@ -16,7 +16,18 @@ sanitize "${INPUT_GCLOUDSERVICEACCOUNT}" "gcloudServiceAccount"
 sanitize "${INPUT_GCLOUDRUNTIMESERVICEACCOUNT}" "gcloudRuntimeServiceAccount"
 sanitize "${GCLOUD_AUTH}" "GCLOUD_AUTH"
 
+echo "Working dir: $(pwd)"
+echo "GitHub workspace: ${GITHUB_WORKSPACE}"
+
 cd ${GITHUB_WORKSPACE}
+
+# Get version from package.json
+PACKAGE_VERSION=$(cat package.json \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g' \
+  | tr -d '[[:space:]]')
 
 # Set project
 gcloud config set project ${INPUT_GCLOUDPROJECTID}
@@ -27,7 +38,7 @@ gcloud auth activate-service-account --key-file=./key.json
 rm ./key.json
 
 # Submit build
-gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:latest
+gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:${PACKAGE_VERSION}
 
 # Deploy
 gcloud run deploy ${INPUT_SERVICENAME} \
@@ -38,4 +49,4 @@ gcloud run deploy ${INPUT_SERVICENAME} \
   --allow-unauthenticated \
   --service-account ${INPUT_GCLOUDRUNTIMESERVICEACCOUNT} \
   --region us-east1 \
-  --image gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:latest
+  --image gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:${PACKAGE_VERSION}
