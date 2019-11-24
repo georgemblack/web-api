@@ -16,11 +16,6 @@ sanitize "${INPUT_GCLOUDSERVICEACCOUNT}" "gcloudServiceAccount"
 sanitize "${INPUT_GCLOUDRUNTIMESERVICEACCOUNT}" "gcloudRuntimeServiceAccount"
 sanitize "${GCLOUD_AUTH}" "GCLOUD_AUTH"
 
-echo "Working dir: $(pwd)"
-echo "GitHub workspace: ${GITHUB_WORKSPACE}"
-
-cd ${GITHUB_WORKSPACE}
-
 # Get version from package.json
 PACKAGE_VERSION=$(cat package.json \
   | grep version \
