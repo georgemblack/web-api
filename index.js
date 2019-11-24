@@ -15,10 +15,12 @@ const port = process.env.PORT
 
 app.get('/', (req, res) => res.send('Hello, Cloud Run!'))
 
-app.options('/*', (req, res) => {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
+  next()
+})
+
+app.options((req, res) => {
   res.send(200)
 })
 
