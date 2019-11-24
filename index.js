@@ -13,10 +13,11 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORT
 
-app.get('/', (req, res) => res.send('Hello, Cloud Run!'))
+app.get('/', (req, res) => res.send('How are ya now?'))
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
   next()
 })
 
@@ -44,7 +45,6 @@ app.post('/views', (req, res) => {
     req.body.timezone === ''
   ) res.status(400).send('Validation failed')
 
-  // build document
   const docPayload = {
     userAgent: req.body.userAgent,
     hostname: req.body.hostname,
