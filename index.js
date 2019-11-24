@@ -25,9 +25,9 @@ app.options((req, res) => {
 })
 
 app.post('/views', (req, res) => {
-  // if (req.hostname !== 'georgeblack.me') {
-  //   res.status(403).send('Wrong hostname')
-  // }
+  if (req.hostname !== 'georgeblack.me') {
+    res.status(403).send('Wrong hostname')
+  }
 
   // validate payload
   if (
