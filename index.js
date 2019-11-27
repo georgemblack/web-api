@@ -17,6 +17,7 @@ app.get('/', (req, res) => res.send('How are ya now?'))
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
+  res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type')
   next()
 })
