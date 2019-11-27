@@ -10,7 +10,7 @@ sanitize() {
   fi
 }
 
-sanitize "${INPUT_SERVICENAME}" "image-name"
+sanitize "${INPUT_SERVICENAME}" "serviceName"
 sanitize "${INPUT_GCLOUDPROJECTID}" "gcloudProjectId"
 sanitize "${INPUT_GCLOUDSERVICEACCOUNT}" "gcloudServiceAccount"
 sanitize "${INPUT_GCLOUDRUNTIMESERVICEACCOUNT}" "gcloudRuntimeServiceAccount"
