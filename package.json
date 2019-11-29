@@ -1,8 +1,7 @@
 {
-  "name": "web-collector",
-  "version": "1.0.1",
+  "name": "web-api",
   "main": "index.js",
-  "repository": "git@github.com:georgemblack/web-collector.git",
+  "repository": "git@github.com:georgemblack/web-api.git",
   "author": "georgemblack <contact@georgeblack.me>",
   "license": "MIT",
   "scripts": {

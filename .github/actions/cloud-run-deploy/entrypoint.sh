@@ -16,13 +16,9 @@ sanitize "${INPUT_GCLOUDSERVICEACCOUNT}" "gcloudServiceAccount"
 sanitize "${INPUT_GCLOUDRUNTIMESERVICEACCOUNT}" "gcloudRuntimeServiceAccount"
 sanitize "${GCLOUD_AUTH}" "GCLOUD_AUTH"
 
-# Get version from package.json
-PACKAGE_VERSION=$(cat package.json \
-  | grep version \
-  | head -1 \
-  | awk -F: '{ print $2 }' \
-  | sed 's/[",]//g' \
-  | tr -d '[[:space:]]')
+# Get version from timestamp
+# Format: YYYYMMDDHHMMSS
+PACKAGE_VERSION=$(date "+%Y%m%d%H%M%S")
 
 # Set project
 gcloud config set project ${INPUT_GCLOUDPROJECTID}
@@ -38,7 +34,7 @@ gcloud builds submit --tag gcr.io/${INPUT_GCLOUDPROJECTID}/${INPUT_SERVICENAME}:
 # Deploy
 gcloud run deploy ${INPUT_SERVICENAME} \
   --concurrency 20 \
-  --max-instances 1000 \
+  --max-instances 800 \
   --memory 128Mi \
   --platform managed \
   --allow-unauthenticated \
