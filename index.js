@@ -29,6 +29,7 @@ app.options((req, res) => {
 app.post('/views', (req, res) => {
   if (req.hostname !== 'api.georgeblack.me' && req.hostname !== 'a.georgeblack.me') {
     res.status(403).send('Wrong hostname')
+    return
   }
 
   // validate payload
@@ -44,7 +45,10 @@ app.post('/views', (req, res) => {
     !Number.isInteger(req.body.windowInnerWidth) ||
     typeof req.body.timezone !== 'string' ||
     req.body.timezone === ''
-  ) res.status(400).send('Validation failed')
+  ) {
+    res.status(400).send('Validation failed')
+    return
+  }
 
   const docPayload = {
     userAgent: req.body.userAgent,
