@@ -56,7 +56,7 @@ app.post('/views', (req, res) => {
     pathname: req.body.pathname,
     windowInnerWidth: req.body.windowInnerWidth,
     timezone: req.body.timezone,
-    timestamp: new Date().toISOString()
+    timestamp: new Date()
   }
 
   // append referrer if non-empty
