@@ -27,7 +27,7 @@ app.options((req, res) => {
 })
 
 app.post('/views', (req, res) => {
-  if (req.hostname !== 'api.georgeblack.me' && req.hostname !== 'a.georgeblack.me') {
+  if (req.hostname !== 'api.georgeblack.me') {
     res.status(403).send('Wrong hostname')
     return
   }
