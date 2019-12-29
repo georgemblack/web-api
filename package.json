@@ -1,12 +1,12 @@
 {
   "name": "web-api",
-  "main": "index.js",
+  "main": "app.js",
   "repository": "git@github.com:georgemblack/web-api.git",
   "author": "georgemblack <contact@georgeblack.me>",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ./index.js",
-    "lint:fix": "eslint --fix ./index.js"
+    "lint": "eslint ./app.js",
+    "lint:fix": "eslint --fix ./app.js"
   },
   "dependencies": {
     "express": "^4.17.1",
