@@ -38,7 +38,7 @@ gcloud builds submit \
 gcloud run deploy ${INPUT_SERVICENAME} \
   --concurrency 20 \
   --max-instances 800 \
-  --memory 128Mi \
+  --memory 256Mi \
   --platform managed \
   --allow-unauthenticated \
   --service-account ${INPUT_GCLOUDRUNTIMESERVICEACCOUNT} \
