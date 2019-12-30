@@ -1,8 +1,6 @@
 const express = require('express')
 const firestore = require('./firestore')
 
-const HOSTNAME = 'api.georgeblack.me'
-
 // Express setup
 const app = express()
 app.use(express.json())
@@ -19,7 +17,11 @@ app.options((req, res) => {
   res.send(200)
 })
 
-app.post('/views', (req, res) => {
+app.get('/links', async (req, res) => {
+  return res.status(200).send({ links: await firestore.getLinks() })
+})
+
+app.post('/views', async (req, res) => {
   // validate payload
   if (
     typeof req.body.userAgent !== 'string' ||
