@@ -1,19 +1,19 @@
-const admin = require('firebase-admin')
 const express = require('express')
-const uuid = require('uuid/v4')
+const firestore = require('./firestore')
 
-// Firestore connection
-admin.initializeApp({
-  credential: admin.credential.applicationDefault()
-})
-const db = admin.firestore()
+const HOSTNAME = 'api.georgeblack.me'
 
-// Express
+// Express setup
 const app = express()
 app.use(express.json())
-const port = process.env.PORT
+const port = process.env.PORT || 8080
 
-app.get('/', (req, res) => res.send('How are ya now?'))
+function validateHostname (req, res, next) {
+  if (req.hostname !== HOSTNAME) {
+    return res.status(403).send('Wrong hostname')
+  }
+  next()
+}
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
@@ -26,12 +26,7 @@ app.options((req, res) => {
   res.send(200)
 })
 
-app.post('/views', (req, res) => {
-  if (req.hostname !== 'api.georgeblack.me') {
-    res.status(403).send('Wrong hostname')
-    return
-  }
-
+app.post('/views', validateHostname, (req, res) => {
   // validate payload
   if (
     typeof req.body.userAgent !== 'string' ||
@@ -46,8 +41,7 @@ app.post('/views', (req, res) => {
     typeof req.body.timezone !== 'string' ||
     req.body.timezone === ''
   ) {
-    res.status(400).send('Validation failed')
-    return
+    return res.status(400).send('Validation failed')
   }
 
   const docPayload = {
@@ -64,12 +58,11 @@ app.post('/views', (req, res) => {
 
   // write to firestore
   try {
-    const docRef = db.collection('personal-web-views').doc(uuid())
-    docRef.set(docPayload)
-    res.status(200).send('Thanks for visiting :)')
+    firestore.writeView(docPayload)
   } catch (err) {
-    res.status(500).send('Internal error')
+    return res.status(500).send('Internal error')
   }
+  return res.status(200).send('Thanks for visiting :)')
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

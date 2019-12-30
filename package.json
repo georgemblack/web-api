@@ -5,8 +5,8 @@
   "author": "georgemblack <contact@georgeblack.me>",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ./app.js",
-    "lint:fix": "eslint --fix ./app.js"
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "express": "^4.17.1",
