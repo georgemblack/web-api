@@ -8,13 +8,6 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORT || 8080
 
-function validateHostname (req, res, next) {
-  if (req.hostname !== HOSTNAME) {
-    return res.status(403).send('Wrong hostname')
-  }
-  next()
-}
-
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://georgeblack.me')
   res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
@@ -26,7 +19,7 @@ app.options((req, res) => {
   res.send(200)
 })
 
-app.post('/views', validateHostname, (req, res) => {
+app.post('/views', (req, res) => {
   // validate payload
   if (
     typeof req.body.userAgent !== 'string' ||
