@@ -17,12 +17,6 @@ app.options((req, res) => {
   res.send(200)
 })
 
-app.get('/links', async (req, res) => {
-  const links = await firestore.getLinks()
-  res.header('Cache-Control', 'public, max-age=1800')
-  return res.status(200).send({ links })
-})
-
 app.post('/views', async (req, res) => {
   // validate payload
   if (
