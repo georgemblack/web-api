@@ -26,6 +26,8 @@ app.get('/', (req, res) => {
 app.post('/views', async (req, res) => {
   // validate payload
   if (
+    typeof req.body.hostname !== 'string' ||
+    req.body.hostname !== '' ||
     typeof req.body.pathname !== 'string' ||
     req.body.pathname === '' ||
     typeof req.body.referrer !== 'string' ||
@@ -48,7 +50,7 @@ app.post('/views', async (req, res) => {
 
   // primary payload
   const docPayload = {
-    hostname: req.hostname,
+    hostname: req.body.hostname,
     pathname: req.body.pathname,
     windowInnerWidth: req.body.windowInnerWidth,
     timezone: req.body.timezone,
