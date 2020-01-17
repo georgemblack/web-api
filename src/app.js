@@ -20,7 +20,7 @@ app.options((req, res) => {
 })
 
 app.get('/', (req, res) => {
-  res.sendStatus(200)
+  res.status(200).send('Howdy!')
 })
 
 app.post('/views', async (req, res) => {
