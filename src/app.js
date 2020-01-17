@@ -27,7 +27,7 @@ app.post('/views', async (req, res) => {
   // validate payload
   if (
     typeof req.body.hostname !== 'string' ||
-    req.body.hostname !== '' ||
+    req.body.hostname === '' ||
     typeof req.body.pathname !== 'string' ||
     req.body.pathname === '' ||
     typeof req.body.referrer !== 'string' ||
