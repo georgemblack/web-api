@@ -8,11 +8,14 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Cloud Run Deploy
-      uses: ./.github/actions/cloud-run-deploy
+      uses: georgemblack/actions/cloud-run-deploy@1.0.2
       with:
-        serviceName: george-web-api
-        gcloudProjectId: ${{ secrets.GCLOUD_PROJECT_ID }}
-        gcloudServiceAccount: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
-        gcloudRuntimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
+        serviceName: web-api
+        projectId: ${{ secrets.GCLOUD_PROJECT_ID }}
+        serviceAccount: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+        runtimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
+        region: us-east1
+        concurrency: 20
+        maxInstances: 800
       env:
         GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
