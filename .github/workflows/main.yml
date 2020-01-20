@@ -8,12 +8,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Cloud Run Deploy
-      uses: georgemblack/actions/cloud-run-deploy@1.0.2
+      uses: georgemblack/actions/cloud-run-deploy@1.0.3
       with:
         serviceName: web-api
         projectId: ${{ secrets.GCLOUD_PROJECT_ID }}
         serviceAccount: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
         runtimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
+        cloudBuildBucket: artifacts.gmb-personal.appspot.com
         region: us-east1
         concurrency: 20
         maxInstances: 800
