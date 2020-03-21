@@ -13,7 +13,7 @@ jobs:
         serviceName: web-api
         projectId: ${{ secrets.GCLOUD_PROJECT_ID }}
         runtimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
-        cloudBuildBucket: artifacts.gmb-personal.appspot.com
+        cloudBuildBucket: artifacts.oceanblue.appspot.com
         region: us-east1
         concurrency: 20
         maxInstances: 800
