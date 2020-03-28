@@ -35,10 +35,6 @@ async function getBookmarks() {
     };
   });
 
-  const aggregates = {
-    total: views.length,
-  };
-
   return {
     bookmarks,
   };
