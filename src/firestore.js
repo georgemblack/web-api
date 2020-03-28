@@ -20,7 +20,7 @@ async function getBookmarks() {
   date.setDate(date.getDate() - 20);
 
   const snapshot = await db
-    .collection(BOOKMARKS_COLLECTION_NAME)
+    .collection(BOOKMARK_COLLECTION_NAME)
     .where("timestamp", ">", date)
     .orderBy("timestamp", "desc")
     .get();
