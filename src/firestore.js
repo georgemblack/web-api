@@ -16,12 +16,8 @@ function writeView(payload) {
 }
 
 async function getBookmarks() {
-  const date = new Date();
-  date.setDate(date.getDate() - 20);
-
   const snapshot = await db
     .collection(BOOKMARK_COLLECTION_NAME)
-    .where("timestamp", ">", date)
     .orderBy("timestamp", "desc")
     .get();
 
