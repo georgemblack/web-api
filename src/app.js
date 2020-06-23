@@ -85,4 +85,14 @@ app.get("/bookmarks", async (req, res) => {
   }
 });
 
+app.get("/likes", async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    return res.status(200).send(await firestore.getBookmarks());
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
+  }
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
