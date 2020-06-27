@@ -2,13 +2,15 @@ const express = require("express");
 const config = require("config");
 const firestore = require("./firestore");
 
+ACCESS_CONTROL_ALLOW_ORIGIN = config.get("accessControlAllowOrigin");
+
 // Express setup
 const app = express();
 app.use(express.json());
 const port = process.env.PORT || 8080;
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", config.get("accessControlAllowOrigin"));
+  res.header("Access-Control-Allow-Origin", ACCESS_CONTROL_ALLOW_ORIGIN);
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
