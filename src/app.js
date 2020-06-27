@@ -1,4 +1,5 @@
 const express = require("express");
+const config = require("config");
 const firestore = require("./firestore");
 
 // Express setup
@@ -7,7 +8,7 @@ app.use(express.json());
 const port = process.env.PORT || 8080;
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://georgeblack.me");
+  res.header("Access-Control-Allow-Origin", config.get("accessControlAllowOrigin"));
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
