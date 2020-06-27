@@ -1,6 +1,8 @@
 const express = require("express");
 const config = require("config");
+const auth = require("./auth");
 const firestore = require("./firestore");
+const rateLimiter = require("./rateLimiter");
 
 ACCESS_CONTROL_ALLOW_ORIGIN = config.get("accessControlAllowOrigin");
 
@@ -9,6 +11,9 @@ const app = express();
 app.use(express.json());
 const port = process.env.PORT || 8080;
 
+/**
+ * Standardized headers for all requests
+ */
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", ACCESS_CONTROL_ALLOW_ORIGIN);
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -25,6 +30,18 @@ app.options((req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Howdy!");
 });
+
+/**
+ * Generate token for client, auth with username and password
+ */
+app.post(
+  "/auth",
+  rateLimiter.rateLimit,
+  auth.validateBasicAuth,
+  async (req, res) => {
+    return res.status(200).send({ token: auth.generateToken() });
+  }
+);
 
 app.post("/views", async (req, res) => {
   // validate payload
@@ -88,15 +105,20 @@ app.get("/bookmarks", async (req, res) => {
   }
 });
 
-app.get("/likes", async (req, res) => {
-  res.header("Content-Type", "application/json");
-  try {
-    return res.status(200).send(await firestore.getBookmarks());
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
+app.get(
+  "/likes",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getBookmarks());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
   }
-});
+);
 
 app.get("/posts", async (req, res) => {
   res.header("Content-Type", "application/json");
