@@ -15,7 +15,7 @@ const port = process.env.PORT || 8080;
  * Standardized headers for all requests
  */
 app.use((req, res, next) => {
-  if (req.hostname == "admin.georgeblack.me") {
+  if (req.headers.host === "admin.georgeblack.me") {
     res.header("Access-Control-Allow-Origin", "https://admin.georgeblack.me");
   } else {
     res.header(
