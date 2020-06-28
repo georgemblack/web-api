@@ -18,7 +18,10 @@ app.use((req, res, next) => {
   if (req.hostname == "admin.georgeblack.me") {
     res.header("Access-Control-Allow-Origin", "https://admin.georgeblack.me");
   } else {
-    res.header("Access-Control-Allow-Origin", DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN);
+    res.header(
+      "Access-Control-Allow-Origin",
+      DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN
+    );
   }
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
