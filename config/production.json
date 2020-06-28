@@ -1,3 +1,6 @@
 {
-  "accessControlAllowOrigin": "https://georgeblack.me"
+  "originWhitelist": [
+    "https://georgeblack.me",
+    "https://admin.georgeblack.me"
+  ]
 }

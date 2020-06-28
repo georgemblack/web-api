@@ -1,3 +1,5 @@
 {
-  "accessControlAllowOrigin": "*"
+  "originWhitelist": [
+    "http://localhost:8080"
+  ]
 }
