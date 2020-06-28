@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     : "https://georgeblack.me";
 
   res.header("Access-Control-Allow-Origin", origin);
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
   res.header("Accept-CH-Lifetime", "2592000");
@@ -146,7 +146,21 @@ app.post(
 
     try {
       await firestore.postLike(docPayload);
-      return res.status(200).send("Done");
+      return res.status(201).send("Done");
+    } catch (err) {
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.delete(
+  "/likes/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    try {
+      await firestore.deleteLike(req.params.id);
+      return res.status(201).send("Done");
     } catch (err) {
       return res.status(500).send("Internal error");
     }

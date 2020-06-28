@@ -58,6 +58,16 @@ async function getLikes() {
   };
 }
 
+async function postLike(payload) {
+  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(uuid());
+  docRef.set(payload);
+}
+
+async function deleteLike(id) {
+  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(id);
+  await docRef.delete();
+}
+
 async function getPosts() {
   const snapshot = await db
     .collection(POST_COLLECTION_NAME)
@@ -79,17 +89,11 @@ async function getPosts() {
   };
 }
 
-/**
- * Add new "like"
- */
-async function postLike(payload) {
-  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(uuid());
-  docRef.set(payload);
-}
-
 module.exports = {
   writeView,
   getBookmarks,
   getPosts,
+  getLikes,
   postLike,
+  deleteLike,
 };
