@@ -37,6 +37,27 @@ async function getBookmarks() {
   };
 }
 
+async function getLikes() {
+  const snapshot = await db
+    .collection(BOOKMARK_COLLECTION_NAME)
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const likes = snapshot.docs.map((doc) => {
+    const payload = doc.data();
+    return {
+      id: doc.id,
+      timestamp: payload.timestamp._seconds,
+      title: payload.title,
+      url: payload.url,
+    };
+  });
+
+  return {
+    likes,
+  };
+}
+
 async function getPosts() {
   const snapshot = await db
     .collection(POST_COLLECTION_NAME)
