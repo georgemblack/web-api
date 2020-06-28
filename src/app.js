@@ -17,7 +17,7 @@ const port = process.env.PORT || 8080;
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", ACCESS_CONTROL_ALLOW_ORIGIN);
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
   res.header("Accept-CH-Lifetime", "2592000");
   next();
@@ -115,6 +115,35 @@ app.get(
       return res.status(200).send(await firestore.getBookmarks());
     } catch (err) {
       console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.post(
+  "/likes",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    if (
+      typeof req.body.title !== "string" ||
+      req.body.title === "" ||
+      typeof req.body.url !== "string" ||
+      req.body.url === ""
+    ) {
+      return res.status(400).send("Validation failed");
+    }
+
+    const docPayload = {
+      title: req.body.title,
+      url: req.body.url,
+      timestamp: new Date(),
+    };
+
+    try {
+      await firestore.postLike(docPayload);
+      return res.status(200).send("Done");
+    } catch (err) {
       return res.status(500).send("Internal error");
     }
   }

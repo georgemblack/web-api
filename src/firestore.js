@@ -58,8 +58,17 @@ async function getPosts() {
   };
 }
 
+/**
+ * Add new "like"
+ */
+async function postLike(payload) {
+  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(uuid());
+  docRef.set(payload);
+}
+
 module.exports = {
   writeView,
   getBookmarks,
   getPosts,
+  postLike,
 };
