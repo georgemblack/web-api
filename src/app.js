@@ -4,7 +4,7 @@ const auth = require("./auth");
 const firestore = require("./firestore");
 const rateLimiter = require("./rateLimiter");
 
-ACCESS_CONTROL_ALLOW_ORIGIN = config.get("accessControlAllowOrigin");
+DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN = config.get("accessControlAllowOrigin");
 
 // Express setup
 const app = express();
@@ -15,7 +15,11 @@ const port = process.env.PORT || 8080;
  * Standardized headers for all requests
  */
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", ACCESS_CONTROL_ALLOW_ORIGIN);
+  if (req.hostname == "admin.georgeblack.me") {
+    res.header("Access-Control-Allow-Origin", "https://admin.georgeblack.me");
+  } else {
+    res.header("Access-Control-Allow-Origin", DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN);
+  }
   res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
