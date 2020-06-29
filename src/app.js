@@ -91,22 +91,12 @@ app.post("/views", async (req, res) => {
 
   // write to firestore
   try {
-    firestore.writeView(docPayload);
+    firestore.postView(docPayload);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal error");
   }
   return res.status(200).send("Thanks for visiting :)");
-});
-
-app.get("/bookmarks", async (req, res) => {
-  res.header("Content-Type", "application/json");
-  try {
-    return res.status(200).send(await firestore.getBookmarks());
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
-  }
 });
 
 app.get(
@@ -171,6 +161,19 @@ app.get("/posts", async (req, res) => {
   res.header("Content-Type", "application/json");
   try {
     return res.status(200).send(await firestore.getPosts());
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
+  }
+});
+
+/**
+ * Legacy – to be removed
+ */
+app.get("/bookmarks", async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    return res.status(200).send(await firestore.getBookmarks());
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal error");

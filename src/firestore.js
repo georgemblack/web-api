@@ -12,30 +12,9 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-function writeView(payload) {
+function postView(payload) {
   const docRef = db.collection(VIEW_COLLECTION_NAME).doc(uuid());
   docRef.set(payload);
-}
-
-async function getBookmarks() {
-  const snapshot = await db
-    .collection(LIKE_COLLECTION_NAME)
-    .orderBy("timestamp", "desc")
-    .get();
-
-  const bookmarks = snapshot.docs.map((doc) => {
-    const payload = doc.data();
-    return {
-      id: doc.id,
-      timestamp: payload.timestamp._seconds,
-      title: payload.title,
-      url: payload.url,
-    };
-  });
-
-  return {
-    bookmarks,
-  };
 }
 
 async function getLikes() {
@@ -90,11 +69,35 @@ async function getPosts() {
   };
 }
 
+/**
+ * Legacy – to be removed
+ */
+async function getBookmarks() {
+  const snapshot = await db
+    .collection(LIKE_COLLECTION_NAME)
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const bookmarks = snapshot.docs.map((doc) => {
+    const payload = doc.data();
+    return {
+      id: doc.id,
+      timestamp: payload.timestamp._seconds,
+      title: payload.title,
+      url: payload.url,
+    };
+  });
+
+  return {
+    bookmarks,
+  };
+}
+
 module.exports = {
-  writeView,
-  getBookmarks,
+  postView,
   getPosts,
   getLikes,
   postLike,
   deleteLike,
+  getBookmarks,
 };
