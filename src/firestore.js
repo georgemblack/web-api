@@ -1,9 +1,10 @@
 const admin = require("firebase-admin");
+const config = require("config");
 const uuid = require("uuid/v4");
 
-const VIEW_COLLECTION_NAME = "web-views";
-const BOOKMARK_COLLECTION_NAME = "web-bookmarks";
-const POST_COLLECTION_NAME = "web-posts";
+const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
+const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
+const POST_COLLECTION_NAME = config.get("postCollectionName");
 
 // Firestore connection
 admin.initializeApp({
@@ -18,7 +19,7 @@ function writeView(payload) {
 
 async function getBookmarks() {
   const snapshot = await db
-    .collection(BOOKMARK_COLLECTION_NAME)
+    .collection(LIKE_COLLECTION_NAME)
     .orderBy("timestamp", "desc")
     .get();
 
@@ -39,7 +40,7 @@ async function getBookmarks() {
 
 async function getLikes() {
   const snapshot = await db
-    .collection(BOOKMARK_COLLECTION_NAME)
+    .collection(LIKE_COLLECTION_NAME)
     .orderBy("timestamp", "desc")
     .get();
 
@@ -59,12 +60,12 @@ async function getLikes() {
 }
 
 async function postLike(payload) {
-  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(uuid());
+  const docRef = db.collection(LIKE_COLLECTION_NAME).doc(uuid());
   docRef.set(payload);
 }
 
 async function deleteLike(id) {
-  const docRef = db.collection(BOOKMARK_COLLECTION_NAME).doc(id);
+  const docRef = db.collection(LIKE_COLLECTION_NAME).doc(id);
   await docRef.delete();
 }
 

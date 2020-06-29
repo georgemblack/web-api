@@ -2,5 +2,8 @@
   "originWhitelist": [
     "https://georgeblack.me",
     "https://admin.georgeblack.me"
-  ]
+  ],
+  "postCollectionName": "web-posts",
+  "likeCollectionName": "web-likes",
+  "viewCollectionName": "web-views"
 }
