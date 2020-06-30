@@ -47,6 +47,21 @@ app.post(
   }
 );
 
+app.get(
+  "/views",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getViews());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
 app.post("/views", async (req, res) => {
   // validate payload
   if (
@@ -98,6 +113,20 @@ app.post("/views", async (req, res) => {
   }
   return res.status(200).send("Thanks for visiting :)");
 });
+
+app.delete(
+  "/views/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    try {
+      await firestore.deleteView(req.params.id);
+      return res.status(201).send("Done");
+    } catch (err) {
+      return res.status(500).send("Internal error");
+    }
+  }
+);
 
 app.get(
   "/likes",

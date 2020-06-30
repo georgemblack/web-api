@@ -12,14 +12,53 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+async function getViews() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+
+  const snapshot = await db
+    .collection(VIEW_COLLECTION_NAME)
+    .where("timestamp", ">", date)
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const views = snapshot.docs.map((doc) => {
+    const payload = doc.data();
+    return {
+      id: doc.id,
+      timestamp: payload.timestamp._seconds,
+      pathname: payload.pathname,
+      referrer: payload.referrer || "",
+      userAgent: payload.userAgent,
+      windowInnerWidth: payload.windowInnerWidth,
+      timezone: payload.timezone,
+      hostname: payload.hostname,
+      userAgent: payload.userAgent,
+    };
+  });
+
+  return {
+    views,
+  };
+}
+
 function postView(payload) {
   const docRef = db.collection(VIEW_COLLECTION_NAME).doc(uuid());
   docRef.set(payload);
 }
 
+async function deleteView(id) {
+  const docRef = db.collection(VIEW_COLLECTION_NAME).doc(id);
+  await docRef.delete();
+}
+
 async function getLikes() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+
   const snapshot = await db
     .collection(LIKE_COLLECTION_NAME)
+    .where("timestamp", ">", date)
     .orderBy("timestamp", "desc")
     .get();
 
@@ -94,7 +133,9 @@ async function getBookmarks() {
 }
 
 module.exports = {
+  getViews,
   postView,
+  deleteView,
   getPosts,
   getLikes,
   postLike,
