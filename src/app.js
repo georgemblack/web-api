@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
  * Generate token for client, auth with username and password
  */
 app.post(
-  "/auth",
+  "/admin/auth",
   rateLimiter.rateLimit,
   auth.validateBasicAuth,
   async (req, res) => {
@@ -48,7 +48,7 @@ app.post(
 );
 
 app.get(
-  "/views",
+  "/admin/views",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -115,7 +115,7 @@ app.post("/views", async (req, res) => {
 });
 
 app.delete(
-  "/views/:id",
+  "/admin/views/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -129,7 +129,7 @@ app.delete(
 );
 
 app.get(
-  "/likes",
+  "/admin/likes",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -144,7 +144,7 @@ app.get(
 );
 
 app.post(
-  "/likes",
+  "/admin/likes",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -173,7 +173,7 @@ app.post(
 );
 
 app.delete(
-  "/likes/:id",
+  "/admin/likes/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -186,7 +186,7 @@ app.delete(
   }
 );
 
-app.get("/posts", async (req, res) => {
+app.get("/admin/posts", async (req, res) => {
   res.header("Content-Type", "application/json");
   try {
     return res.status(200).send(await firestore.getPosts());
