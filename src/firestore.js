@@ -26,8 +26,8 @@ async function getViews() {
   const views = snapshot.docs.map((doc) => {
     const payload = doc.data();
 
-    const browser = bowser.getParser(payload.userAgent)
-    const browserName = browser.getBrowserName()
+    const browser = bowser.getParser(payload.userAgent);
+    const browserName = browser.getBrowserName();
 
     return {
       id: doc.id,
@@ -39,7 +39,7 @@ async function getViews() {
       timezone: payload.timezone,
       hostname: payload.hostname,
       userAgent: payload.userAgent,
-      browser: browserName
+      browser: browserName,
     };
   });
 
