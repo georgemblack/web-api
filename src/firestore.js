@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const config = require("config");
+const bowser = require("bowser");
 const uuid = require("uuid/v4");
 
 const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
@@ -24,6 +25,10 @@ async function getViews() {
 
   const views = snapshot.docs.map((doc) => {
     const payload = doc.data();
+
+    const browser = bowser.getParser(payload.userAgent)
+    const browserName = browser.getBrowserName()
+
     return {
       id: doc.id,
       timestamp: payload.timestamp._seconds,
@@ -34,6 +39,7 @@ async function getViews() {
       timezone: payload.timezone,
       hostname: payload.hostname,
       userAgent: payload.userAgent,
+      browser: browserName
     };
   });
 
