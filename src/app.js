@@ -196,6 +196,26 @@ app.get("/admin/posts", async (req, res) => {
   }
 });
 
+app.post(
+  "/admin/posts",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    const docPayload = {
+      published: new Date(req.body.published),
+      metadata: req.body.metadata,
+      content: req.body.content,
+    };
+
+    try {
+      await firestore.postPost(docPayload);
+      return res.status(201).send("Done");
+    } catch (err) {
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
 /**
  * Legacy – to be removed
  */

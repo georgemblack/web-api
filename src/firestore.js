@@ -114,6 +114,11 @@ async function getPosts() {
   };
 }
 
+async function postPost(payload) {
+  const docRef = db.collection(POST_COLLECTION_NAME).doc(uuid());
+  docRef.set(payload);
+}
+
 /**
  * Legacy – to be removed
  */
@@ -143,6 +148,7 @@ module.exports = {
   postView,
   deleteView,
   getPosts,
+  postPost,
   getLikes,
   postLike,
   deleteLike,
