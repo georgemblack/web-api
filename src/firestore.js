@@ -119,6 +119,11 @@ async function postPost(payload) {
   docRef.set(payload);
 }
 
+async function deletePost(id) {
+  const docRef = db.collection(POST_COLLECTION_NAME).doc(id);
+  await docRef.delete();
+}
+
 /**
  * Legacy – to be removed
  */
@@ -149,6 +154,7 @@ module.exports = {
   deleteView,
   getPosts,
   postPost,
+  deletePost,
   getLikes,
   postLike,
   deleteLike,

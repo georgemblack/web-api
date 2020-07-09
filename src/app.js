@@ -186,15 +186,20 @@ app.delete(
   }
 );
 
-app.get("/admin/posts", async (req, res) => {
-  res.header("Content-Type", "application/json");
-  try {
-    return res.status(200).send(await firestore.getPosts());
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
+app.get(
+  "/admin/posts",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getPosts());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
   }
-});
+);
 
 app.post(
   "/admin/posts",
@@ -209,6 +214,20 @@ app.post(
 
     try {
       await firestore.postPost(docPayload);
+      return res.status(201).send("Done");
+    } catch (err) {
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.delete(
+  "/admin/posts/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    try {
+      await firestore.deletePost(req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
       return res.status(500).send("Internal error");
