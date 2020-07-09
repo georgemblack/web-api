@@ -103,9 +103,7 @@ async function getPosts() {
     const payload = doc.data();
     return {
       id: doc.id,
-      published: payload.published._seconds,
-      metadata: payload.metadata,
-      content: payload.content,
+      ...payload,
     };
   });
 
@@ -119,7 +117,7 @@ async function getPost(id) {
   const payload = doc.data();
   return {
     id: doc.id,
-    ...payload
+    ...payload,
   };
 }
 
