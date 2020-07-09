@@ -195,7 +195,20 @@ app.get(
     try {
       return res.status(200).send(await firestore.getPosts());
     } catch (err) {
-      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.get(
+  "/admin/posts/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getPost(req.params.id));
+    } catch (err) {
       return res.status(500).send("Internal error");
     }
   }

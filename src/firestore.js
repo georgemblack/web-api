@@ -114,9 +114,18 @@ async function getPosts() {
   };
 }
 
+async function getPost(id) {
+  const doc = await db.collection(POST_COLLECTION_NAME).doc(id).get();
+  const payload = doc.data();
+  return {
+    id: doc.id,
+    ...payload
+  };
+}
+
 async function postPost(payload) {
   const docRef = db.collection(POST_COLLECTION_NAME).doc(uuid());
-  docRef.set(payload);
+  await docRef.set(payload);
 }
 
 async function deletePost(id) {
@@ -153,6 +162,7 @@ module.exports = {
   postView,
   deleteView,
   getPosts,
+  getPost,
   postPost,
   deletePost,
   getLikes,
