@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
  */
 app.post(
   "/admin/auth",
-  rateLimiter.rateLimit,
+  rateLimiter.intenseRateLimit,
   auth.validateBasicAuth,
   async (req, res) => {
     return res.status(200).send({ token: auth.generateToken() });
