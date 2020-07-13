@@ -9,7 +9,7 @@ ALLOWED_ORIGINS = config.get("originWhitelist");
 // Express setup
 const app = express();
 app.use(express.json());
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 9000;
 
 /**
  * Standardized headers for all requests
