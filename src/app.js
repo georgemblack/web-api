@@ -123,6 +123,7 @@ app.delete(
       await firestore.deleteView(req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -167,6 +168,7 @@ app.post(
       await firestore.postLike(docPayload);
       return res.status(201).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -181,6 +183,7 @@ app.delete(
       await firestore.deleteLike(req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -195,6 +198,7 @@ app.get(
     try {
       return res.status(200).send(await firestore.getPosts());
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -209,6 +213,7 @@ app.get(
     try {
       return res.status(200).send(await firestore.getPost(req.params.id));
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -229,6 +234,7 @@ app.post(
       await firestore.postPost(docPayload);
       return res.status(201).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -239,7 +245,6 @@ app.put(
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
-    console.log("up here")
     const docPayload = {
       published: new Date(req.body.published),
       metadata: req.body.metadata,
@@ -250,6 +255,7 @@ app.put(
       await firestore.putPost(req.params.id, docPayload);
       return res.status(200).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
@@ -264,6 +270,7 @@ app.delete(
       await firestore.deletePost(req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal error");
     }
   }
