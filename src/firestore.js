@@ -126,6 +126,11 @@ async function postPost(payload) {
   await docRef.set(payload);
 }
 
+async function putPost(id, payload) {
+  const docRef = db.collection(POST_COLLECTION_NAME).doc(id);
+  await docRef.set(payload);
+}
+
 async function deletePost(id) {
   const docRef = db.collection(POST_COLLECTION_NAME).doc(id);
   await docRef.delete();
@@ -162,6 +167,7 @@ module.exports = {
   getPosts,
   getPost,
   postPost,
+  putPost,
   deletePost,
   getLikes,
   postLike,

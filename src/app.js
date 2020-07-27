@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     : "https://georgeblack.me";
 
   res.header("Access-Control-Allow-Origin", origin);
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+  res.header("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
   res.header("Accept-CH-Lifetime", "2592000");
@@ -228,6 +228,27 @@ app.post(
     try {
       await firestore.postPost(docPayload);
       return res.status(201).send("Done");
+    } catch (err) {
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.put(
+  "/admin/posts/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    console.log("up here")
+    const docPayload = {
+      published: new Date(req.body.published),
+      metadata: req.body.metadata,
+      content: req.body.content,
+    };
+
+    try {
+      await firestore.putPost(req.params.id, docPayload);
+      return res.status(200).send("Done");
     } catch (err) {
       return res.status(500).send("Internal error");
     }

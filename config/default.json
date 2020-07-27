@@ -1,6 +1,6 @@
 {
   "originWhitelist": [
-    "http://localhost:8000"
+    "http://localhost:9001"
   ],
   "postCollectionName": "web-posts-test",
   "likeCollectionName": "web-likes-test",
