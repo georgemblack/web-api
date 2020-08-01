@@ -72,7 +72,7 @@ async function getLikes() {
     const payload = doc.data();
     return {
       id: doc.id,
-      ...payload
+      ...payload,
     };
   });
 
