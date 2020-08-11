@@ -134,30 +134,6 @@ async function deletePost(id) {
   await docRef.delete();
 }
 
-/**
- * Legacy – to be removed
- */
-async function getBookmarks() {
-  const snapshot = await db
-    .collection(LIKE_COLLECTION_NAME)
-    .orderBy("timestamp", "desc")
-    .get();
-
-  const bookmarks = snapshot.docs.map((doc) => {
-    const payload = doc.data();
-    return {
-      id: doc.id,
-      timestamp: payload.timestamp._seconds,
-      title: payload.title,
-      url: payload.url,
-    };
-  });
-
-  return {
-    bookmarks,
-  };
-}
-
 module.exports = {
   getViews,
   postView,
@@ -170,5 +146,4 @@ module.exports = {
   getLikes,
   postLike,
   deleteLike,
-  getBookmarks,
 };
