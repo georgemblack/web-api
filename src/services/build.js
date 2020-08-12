@@ -17,9 +17,9 @@ async function postBuild() {
   let buildResponse = await fetch(SERVICE_URL, {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${token}`
-    }
-  })
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return await buildResponse.json();
 }
