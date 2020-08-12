@@ -11,10 +11,10 @@ async function postBuild() {
     },
   });
 
-  responseBody = await response.text();
-  console.log(response);
-  console.log(responseBody);
-  return responseBody;
+  token = await response.text();
+  return {
+    buildID: "abc123"
+  };
 }
 
 module.exports = {
