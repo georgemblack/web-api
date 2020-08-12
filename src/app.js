@@ -1,7 +1,9 @@
 const express = require("express");
 const config = require("config");
+
 const auth = require("./auth");
-const firestore = require("./firestore");
+const firestore = require("./services/firestore");
+const build = require("./services/build");
 const rateLimiter = require("./rateLimiter");
 
 ALLOWED_ORIGINS = config.get("originWhitelist");
@@ -269,6 +271,20 @@ app.delete(
     try {
       await firestore.deletePost(req.params.id);
       return res.status(201).send("Done");
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.post(
+  "/admin/builds",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    try {
+      return await build.postBuild();
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal error");

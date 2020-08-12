@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^8.9.1",
     "jsonwebtoken": "^8.5.1",
+    "node-fetch": "^2.6.0",
     "rate-limiter-flexible": "^2.1.7",
     "uuid": "^3.4.0"
   },
