@@ -20,7 +20,8 @@ async function postBuild() {
       Authorization: `Bearer ${token}`,
     },
   });
-
+  console.log(token);
+  console.log(buildResponse);
   return await buildResponse.json();
 }
 
