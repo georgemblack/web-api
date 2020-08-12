@@ -5,16 +5,23 @@ const METADATA_SERVER_TOKEN_URL =
 const SERVICE_URL = "https://web-builder-zjxddraycq-ue.a.run.app";
 
 async function postBuild() {
-  let response = await fetch(METADATA_SERVER_TOKEN_URL + SERVICE_URL, {
+  // fetch token
+  let tokenResponse = await fetch(METADATA_SERVER_TOKEN_URL + SERVICE_URL, {
     headers: {
       "Metadata-Flavor": "Google",
     },
   });
+  token = await tokenResponse.text();
 
-  token = await response.text();
-  return {
-    buildID: "abc123",
-  };
+  // start build
+  let buildResponse = await fetch(SERVICE_URL, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  })
+
+  return await buildResponse.json();
 }
 
 module.exports = {
