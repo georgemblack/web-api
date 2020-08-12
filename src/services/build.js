@@ -1,26 +1,21 @@
 const fetch = require("node-fetch");
+const { GoogleAuth } = require("google-auth-library");
+const auth = new GoogleAuth();
 
-const METADATA_SERVER_TOKEN_URL =
-  "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=";
 const SERVICE_URL = "https://web-builder-zjxddraycq-ue.a.run.app";
+let client;
 
 async function postBuild() {
-  // fetch token
-  let tokenResponse = await fetch(METADATA_SERVER_TOKEN_URL + SERVICE_URL, {
-    headers: {
-      "Metadata-Flavor": "Google",
-    },
-  });
-  token = await tokenResponse.text();
+  if (!client) client = await auth.getIdTokenClient(SERVICE_URL);
+  const clientHeaders = await client.getRequestHeaders();
 
   // start build
   let buildResponse = await fetch(SERVICE_URL, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: clientHeaders["Authorization"],
     },
   });
-  console.log(token);
   console.log(buildResponse);
   return await buildResponse.json();
 }
