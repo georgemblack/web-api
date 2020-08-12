@@ -5,14 +5,11 @@ const METADATA_SERVER_TOKEN_URL =
 const SERVICE_URL = "https://web-builder-zjxddraycq-ue.a.run.app";
 
 async function postBuild() {
-  let response = await fetch(
-    METADATA_SERVER_TOKEN_URL + SERVICE_URL,
-    {
-      headers: {
-        "Metadata-Flavor": "Google",
-      },
-    }
-  );
+  let response = await fetch(METADATA_SERVER_TOKEN_URL + SERVICE_URL, {
+    headers: {
+      "Metadata-Flavor": "Google",
+    },
+  });
 
   responseBody = await response.text();
   console.log(response);
