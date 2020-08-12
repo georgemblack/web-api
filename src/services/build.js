@@ -14,7 +14,7 @@ async function postBuild() {
     }
   );
 
-  responseBody = response.json();
+  responseBody = await response.json();
   console.log(response);
   console.log(responseBody);
   return responseBody;
