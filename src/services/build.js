@@ -13,7 +13,7 @@ async function postBuild() {
 
   token = await response.text();
   return {
-    buildID: "abc123"
+    buildID: "abc123",
   };
 }
 
