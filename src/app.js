@@ -285,7 +285,7 @@ app.post(
   async (req, res) => {
     res.header("Content-Type", "application/json");
     try {
-      return await res.status(200).send(build.postBuild());
+      return res.status(200).send(await build.postBuild());
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal error");

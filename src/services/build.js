@@ -16,7 +16,6 @@ async function postBuild() {
       Authorization: clientHeaders["Authorization"],
     },
   });
-  console.log(buildResponse);
   return await buildResponse.json();
 }
 
