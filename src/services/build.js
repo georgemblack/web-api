@@ -1,8 +1,10 @@
 const fetch = require("node-fetch");
+const config = require("config");
+
 const { GoogleAuth } = require("google-auth-library");
 const auth = new GoogleAuth();
 
-const SERVICE_URL = "https://web-builder-zjxddraycq-ue.a.run.app";
+const SERVICE_URL = config.get("buildServiceEndpoint");
 let client;
 
 async function postBuild() {
