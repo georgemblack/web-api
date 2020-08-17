@@ -59,12 +59,8 @@ async function deleteView(id) {
 }
 
 async function getLikes() {
-  const date = new Date();
-  date.setDate(date.getDate() - 30);
-
   const snapshot = await db
     .collection(LIKE_COLLECTION_NAME)
-    .where("timestamp", ">", date)
     .orderBy("timestamp", "desc")
     .get();
 
