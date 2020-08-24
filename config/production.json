@@ -1,7 +1,6 @@
 {
   "buildServiceEndpoint": "https://web-builder-zjxddraycq-ue.a.run.app",
   "originWhitelist": [
-    "https://georgeblack.me",
     "https://admin.georgeblack.me"
   ],
   "postCollectionName": "web-posts",

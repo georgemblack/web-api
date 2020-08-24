@@ -48,11 +48,6 @@ async function getViews() {
   };
 }
 
-function postView(payload) {
-  const docRef = db.collection(VIEW_COLLECTION_NAME).doc(uuid());
-  docRef.set(payload);
-}
-
 async function deleteView(id) {
   const docRef = db.collection(VIEW_COLLECTION_NAME).doc(id);
   await docRef.delete();
@@ -132,7 +127,6 @@ async function deletePost(id) {
 
 module.exports = {
   getViews,
-  postView,
   deleteView,
   getPosts,
   getPost,

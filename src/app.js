@@ -64,58 +64,6 @@ app.get(
   }
 );
 
-app.post("/views", async (req, res) => {
-  // validate payload
-  if (
-    typeof req.body.hostname !== "string" ||
-    req.body.hostname === "" ||
-    typeof req.body.pathname !== "string" ||
-    req.body.pathname === "" ||
-    typeof req.body.referrer !== "string" ||
-    typeof req.body.windowInnerWidth !== "number" ||
-    !Number.isInteger(req.body.windowInnerWidth) ||
-    typeof req.body.timezone !== "string" ||
-    req.body.timezone === ""
-  ) {
-    return res.status(400).send("Validation failed");
-  }
-
-  // build client hints if available
-  const clientHints = {};
-  if (req.get("Sec-CH-UA")) clientHints.userAgent = req.get("Sec-CH-UA");
-  if (req.get("Sec-CH-Platform"))
-    clientHints.platform = req.get("Sec-CH-Platform");
-  if (req.get("Sec-CH-Model")) clientHints.model = req.get("Sec-CH-Model");
-  if (req.get("Sec-CH-Arch")) clientHints.arch = req.get("Sec-CH-Arch");
-  if (req.get("Sec-CH-Viewport-Width"))
-    clientHints.viewportWidth = req.get("Sec-CH-Viewport-Width");
-  if (req.get("Sec-CH-Width")) clientHints.width = req.get("Sec-CH-Width");
-
-  // primary payload
-  const docPayload = {
-    hostname: req.body.hostname,
-    pathname: req.body.pathname,
-    windowInnerWidth: req.body.windowInnerWidth,
-    timezone: req.body.timezone,
-    timestamp: new Date(),
-  };
-
-  // append possibly empty items
-  if (req.get("User-Agent")) docPayload.userAgent = req.get("User-Agent");
-  if (req.body.referrer) docPayload.referrer = req.body.referrer;
-  if (Object.keys(clientHints).length !== 0)
-    docPayload.clientHints = clientHints;
-
-  // write to firestore
-  try {
-    firestore.postView(docPayload);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
-  }
-  return res.status(200).send("Thanks for visiting :)");
-});
-
 app.delete(
   "/admin/views/:id",
   rateLimiter.rateLimit,
