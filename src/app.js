@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
  * Generate token for client, auth with username and password
  */
 app.post(
-  "/admin/auth",
+  "/auth",
   rateLimiter.intenseRateLimit,
   auth.validateBasicAuth,
   async (req, res) => {
@@ -50,7 +50,7 @@ app.post(
 );
 
 app.get(
-  "/admin/views",
+  "/views",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -65,7 +65,7 @@ app.get(
 );
 
 app.delete(
-  "/admin/views/:id",
+  "/views/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -80,7 +80,7 @@ app.delete(
 );
 
 app.get(
-  "/admin/likes",
+  "/likes",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -95,7 +95,7 @@ app.get(
 );
 
 app.post(
-  "/admin/likes",
+  "/likes",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -125,7 +125,7 @@ app.post(
 );
 
 app.delete(
-  "/admin/likes/:id",
+  "/likes/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -140,7 +140,7 @@ app.delete(
 );
 
 app.get(
-  "/admin/posts",
+  "/posts",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -155,7 +155,7 @@ app.get(
 );
 
 app.get(
-  "/admin/posts/:id",
+  "/posts/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -170,7 +170,7 @@ app.get(
 );
 
 app.post(
-  "/admin/posts",
+  "/posts",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -191,7 +191,7 @@ app.post(
 );
 
 app.put(
-  "/admin/posts/:id",
+  "/posts/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -212,7 +212,7 @@ app.put(
 );
 
 app.delete(
-  "/admin/posts/:id",
+  "/posts/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
@@ -227,7 +227,7 @@ app.delete(
 );
 
 app.post(
-  "/admin/builds",
+  "/builds",
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
