@@ -22,7 +22,7 @@ jobs:
         runtimeServiceAccount: ${{ secrets.GCLOUD_RUNTIME_SERVICE_ACCOUNT }}
         cloudBuildBucket: cloudbuild.georgeblack.me
         region: us-east1
-        concurrency: 20
-        maxInstances: 800
+        concurrency: 25
+        maxInstances: 1
       env:
         GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
