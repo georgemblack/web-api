@@ -1,8 +1,6 @@
 {
   "buildServiceEndpoint": "http://localhost:9002",
-  "originWhitelist": [
-    "http://localhost:9001"
-  ],
+  "allowedOrigin": "*",
   "postCollectionName": "web-posts-test",
   "likeCollectionName": "web-likes-test",
   "viewCollectionName": "web-views-test"

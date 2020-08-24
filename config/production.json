@@ -1,8 +1,6 @@
 {
   "buildServiceEndpoint": "https://web-builder-zjxddraycq-ue.a.run.app",
-  "originWhitelist": [
-    "https://admin.georgeblack.me"
-  ],
+  "allowedOrigin": "https://admin.georgeblack.me",
   "postCollectionName": "web-posts",
   "likeCollectionName": "web-likes",
   "viewCollectionName": "web-views"
