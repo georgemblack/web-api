@@ -55,7 +55,7 @@ function validateToken(req, res, next) {
  * Generate JWT for client
  */
 function generateToken() {
-  return jwt.sign({}, TOKEN_SECRET, { expiresIn: "10m" });
+  return jwt.sign({}, TOKEN_SECRET, { expiresIn: "6h" });
 }
 
 module.exports = {
