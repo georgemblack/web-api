@@ -101,6 +101,32 @@ async function getPosts() {
   };
 }
 
+async function getPublishedPosts() {
+  const snapshot = await db
+    .collection(POST_COLLECTION_NAME)
+    .orderBy("published", "desc")
+    .get();
+
+  let posts = snapshot.docs.map((doc) => {
+    const payload = doc.data();
+    return {
+      id: doc.id,
+      ...payload,
+    };
+  });
+
+  // filter
+  posts = posts.filter((post) => {
+    if (!("metadata" in post)) return false;
+    if (!("draft" in post.metadata)) return false;
+    return !post.metadata.draft;
+  });
+
+  return {
+    posts,
+  };
+}
+
 async function getPost(id) {
   const doc = await db.collection(POST_COLLECTION_NAME).doc(id).get();
   const payload = doc.data();
@@ -129,6 +155,7 @@ module.exports = {
   getViews,
   deleteView,
   getPosts,
+  getPublishedPosts,
   getPost,
   postPost,
   putPost,

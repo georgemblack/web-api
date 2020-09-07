@@ -142,6 +142,9 @@ app.get(
   async (req, res) => {
     res.header("Content-Type", "application/json");
     try {
+      if ("published" in req.query) {
+        return res.status(200).send(await firestore.getPublishedPosts());
+      }
       return res.status(200).send(await firestore.getPosts());
     } catch (err) {
       console.log(err);
