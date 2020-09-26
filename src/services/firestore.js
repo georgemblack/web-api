@@ -1,7 +1,7 @@
 const { Firestore } = require("@google-cloud/firestore");
 const config = require("config");
 const bowser = require("bowser");
-const uuid = require("uuid/v4");
+const uuid = require("uuid");
 
 const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
@@ -68,7 +68,7 @@ async function getLikes() {
 }
 
 async function postLike(payload) {
-  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${uuid()}`);
+  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${uuid.v4()}`);
   await doc.set(payload);
 }
 
@@ -132,7 +132,7 @@ async function getPost(id) {
 }
 
 async function postPost(payload) {
-  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${uuid()}`);
+  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${uuid.v4()}`);
   await doc.set(payload);
 }
 
