@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const { Firestore } = require("@google-cloud/firestore");
 const config = require("config");
 const bowser = require("bowser");
 const uuid = require("uuid/v4");
@@ -7,17 +7,13 @@ const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
 
-// Firestore connection
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
-const db = admin.firestore();
+const firestore = new Firestore();
 
 async function getViews() {
   const date = new Date();
   date.setDate(date.getDate() - 30);
 
-  const snapshot = await db
+  const snapshot = await firestore
     .collection(VIEW_COLLECTION_NAME)
     .where("timestamp", ">", date)
     .orderBy("timestamp", "desc")
@@ -25,7 +21,6 @@ async function getViews() {
 
   const views = snapshot.docs.map((doc) => {
     const payload = doc.data();
-
     const browser = bowser.getParser(payload.userAgent);
     const browserName = browser.getBrowserName();
 
@@ -49,12 +44,12 @@ async function getViews() {
 }
 
 async function deleteView(id) {
-  const docRef = db.collection(VIEW_COLLECTION_NAME).doc(id);
-  await docRef.delete();
+  const doc = firestore.doc(`${VIEW_COLLECTION_NAME}/${id}`);
+  await doc.delete();
 }
 
 async function getLikes() {
-  const snapshot = await db
+  const snapshot = await firestore
     .collection(LIKE_COLLECTION_NAME)
     .orderBy("timestamp", "desc")
     .get();
@@ -73,17 +68,17 @@ async function getLikes() {
 }
 
 async function postLike(payload) {
-  const docRef = db.collection(LIKE_COLLECTION_NAME).doc(uuid());
-  docRef.set(payload);
+  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${uuid()}`);
+  await doc.set(payload);
 }
 
 async function deleteLike(id) {
-  const docRef = db.collection(LIKE_COLLECTION_NAME).doc(id);
-  await docRef.delete();
+  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${id}`);
+  await doc.delete();
 }
 
 async function getPosts() {
-  const snapshot = await db
+  const snapshot = await firestore
     .collection(POST_COLLECTION_NAME)
     .orderBy("published", "desc")
     .get();
@@ -102,7 +97,7 @@ async function getPosts() {
 }
 
 async function getPublishedPosts() {
-  const snapshot = await db
+  const snapshot = await firestore
     .collection(POST_COLLECTION_NAME)
     .orderBy("published", "desc")
     .get();
@@ -128,7 +123,7 @@ async function getPublishedPosts() {
 }
 
 async function getPost(id) {
-  const doc = await db.collection(POST_COLLECTION_NAME).doc(id).get();
+  const doc = await firestore.doc(`${POST_COLLECTION_NAME}/${id}`).get();
   const payload = doc.data();
   return {
     id: doc.id,
@@ -137,18 +132,18 @@ async function getPost(id) {
 }
 
 async function postPost(payload) {
-  const docRef = db.collection(POST_COLLECTION_NAME).doc(uuid());
-  await docRef.set(payload);
+  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${uuid()}`);
+  await doc.set(payload);
 }
 
 async function putPost(id, payload) {
-  const docRef = db.collection(POST_COLLECTION_NAME).doc(id);
-  await docRef.set(payload);
+  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${id}`);
+  await doc.set(payload);
 }
 
 async function deletePost(id) {
-  const docRef = db.collection(POST_COLLECTION_NAME).doc(id);
-  await docRef.delete();
+  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${id}`);
+  await doc.delete();
 }
 
 module.exports = {
