@@ -9,6 +9,16 @@ const POST_COLLECTION_NAME = config.get("postCollectionName");
 
 const firestore = new Firestore();
 
+async function postItem(collection, payload) {
+  const doc = firestore.doc(`${collection}/${uuid.v4()}`);
+  await doc.set(payload);
+}
+
+async function deleteItem(collection, id) {
+  const doc = firestore.doc(`${collection}/${id}`);
+  await doc.delete();
+}
+
 async function getViews() {
   const date = new Date();
   date.setDate(date.getDate() - 30);
@@ -43,11 +53,6 @@ async function getViews() {
   };
 }
 
-async function deleteView(id) {
-  const doc = firestore.doc(`${VIEW_COLLECTION_NAME}/${id}`);
-  await doc.delete();
-}
-
 async function getLikes() {
   const snapshot = await firestore
     .collection(LIKE_COLLECTION_NAME)
@@ -65,16 +70,6 @@ async function getLikes() {
   return {
     likes,
   };
-}
-
-async function postLike(payload) {
-  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${uuid.v4()}`);
-  await doc.set(payload);
-}
-
-async function deleteLike(id) {
-  const doc = firestore.doc(`${LIKE_COLLECTION_NAME}/${id}`);
-  await doc.delete();
 }
 
 async function getPosts() {
@@ -131,31 +126,18 @@ async function getPost(id) {
   };
 }
 
-async function postPost(payload) {
-  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${uuid.v4()}`);
-  await doc.set(payload);
-}
-
 async function putPost(id, payload) {
   const doc = firestore.doc(`${POST_COLLECTION_NAME}/${id}`);
   await doc.set(payload);
 }
 
-async function deletePost(id) {
-  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${id}`);
-  await doc.delete();
-}
-
 module.exports = {
+  postItem,
+  deleteItem,
   getViews,
-  deleteView,
   getPosts,
   getPublishedPosts,
   getPost,
-  postPost,
   putPost,
-  deletePost,
   getLikes,
-  postLike,
-  deleteLike,
 };

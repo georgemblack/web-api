@@ -6,7 +6,10 @@ const firestore = require("./services/firestore");
 const build = require("./services/build");
 const rateLimiter = require("./rateLimiter");
 
-ALLOWED_ORIGIN = config.get("allowedOrigin");
+const ALLOWED_ORIGIN = config.get("allowedOrigin");
+const VIEW_COLLECTION = config.get("viewCollectionName");
+const LIKE_COLLECTION = config.get("likeCollectionName");
+const POST_COLLECTION = config.get("postCollectionName");
 
 // Express setup
 const app = express();
@@ -66,7 +69,7 @@ app.delete(
   auth.validateToken,
   async (req, res) => {
     try {
-      await firestore.deleteView(req.params.id);
+      await firestore.deleteItem(VIEW_COLLECTION, req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
       console.log(err);
@@ -111,7 +114,7 @@ app.post(
     };
 
     try {
-      await firestore.postLike(docPayload);
+      await firestore.postItem(LIKE_COLLECTION, docPayload);
       return res.status(201).send("Done");
     } catch (err) {
       console.log(err);
@@ -126,7 +129,7 @@ app.delete(
   auth.validateToken,
   async (req, res) => {
     try {
-      await firestore.deleteLike(req.params.id);
+      await firestore.deleteItem(LIKE_COLLECTION, req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
       console.log(err);
@@ -180,7 +183,7 @@ app.post(
     };
 
     try {
-      await firestore.postPost(docPayload);
+      await firestore.postItem(POST_COLLECTION, docPayload);
       return res.status(201).send("Done");
     } catch (err) {
       console.log(err);
@@ -216,7 +219,7 @@ app.delete(
   auth.validateToken,
   async (req, res) => {
     try {
-      await firestore.deletePost(req.params.id);
+      await firestore.deleteItem(POST_COLLECTION, req.params.id);
       return res.status(201).send("Done");
     } catch (err) {
       console.log(err);
