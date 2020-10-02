@@ -1,6 +1,6 @@
 {
   "buildServiceEndpoint": "https://web-builder-zjxddraycq-ue.a.run.app",
-  "allowedOrigin": "https://admin.georgeblack.me",
+  "allowedOrigin": "https://admin.george.black",
   "postCollectionName": "web-posts",
   "likeCollectionName": "web-likes",
   "viewCollectionName": "web-views"

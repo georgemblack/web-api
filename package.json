@@ -2,7 +2,7 @@
   "name": "web-api",
   "main": "app.js",
   "repository": "git@github.com:georgemblack/web-api.git",
-  "author": "georgemblack <contact@georgeblack.me>",
+  "author": "georgemblack <contact@george.black>",
   "license": "MIT",
   "scripts": {
     "start": "node ./src/app.js",
