@@ -78,6 +78,8 @@ function validateStatsWorkerAccessToken(req, res, next) {
   if (accessToken !== STATS_WORKER_ACCESS_TOKEN) {
     return res.status(401).send("Unauthorized");
   }
+
+  next();
 }
 
 module.exports = {

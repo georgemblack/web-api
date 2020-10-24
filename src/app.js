@@ -66,13 +66,14 @@ app.get(
 app.post("/stats", auth.validateStatsWorkerAccessToken, async (req, res) => {
   let document = req.body;
 
+  // timestamp -> date object
   if (!document.timestamp) {
     return res.status(400).send("Bad request");
   }
   document.timestamp = new Date(document.timestamp);
 
   try {
-    await firestore.postItem(VIEW_COLLECTION_NAME, req.body);
+    await firestore.postItem(VIEW_COLLECTION, document);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal error");
