@@ -63,23 +63,27 @@ app.get(
   }
 );
 
-app.post("/stats/views", auth.validateStatsWorkerAccessToken, async (req, res) => {
-  let document = req.body;
+app.post(
+  "/stats/views",
+  auth.validateStatsWorkerAccessToken,
+  async (req, res) => {
+    let document = req.body;
 
-  // timestamp -> date object
-  if (!document.timestamp) {
-    return res.status(400).send("Bad request");
-  }
-  document.timestamp = new Date(document.timestamp);
+    // timestamp -> date object
+    if (!document.timestamp) {
+      return res.status(400).send("Bad request");
+    }
+    document.timestamp = new Date(document.timestamp);
 
-  try {
-    await firestore.postItem(VIEW_COLLECTION, document);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
+    try {
+      await firestore.postItem(VIEW_COLLECTION, document);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+    return res.status(200).send();
   }
-  return res.status(200).send();
-});
+);
 
 app.delete(
   "/views/:id",

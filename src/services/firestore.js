@@ -39,12 +39,13 @@ async function getViews() {
       timestamp: payload.timestamp._seconds,
       pathname: payload.pathname,
       referrer: payload.referrer || "",
-      userAgent: payload.userAgent,
       windowInnerWidth: payload.windowInnerWidth,
       timezone: payload.timezone,
       hostname: payload.hostname,
       userAgent: payload.userAgent,
       browser: browserName,
+      dataCenterCode: payload.dataCenterCode,
+      countryCode: payload.countryCode,
     };
   });
 
