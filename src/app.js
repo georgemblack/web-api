@@ -63,7 +63,7 @@ app.get(
   }
 );
 
-app.post("/stats", auth.validateStatsWorkerAccessToken, async (req, res) => {
+app.post("/stats/views", auth.validateStatsWorkerAccessToken, async (req, res) => {
   let document = req.body;
 
   // timestamp -> date object
