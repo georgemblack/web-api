@@ -1,8 +1,18 @@
 const jwt = require("jsonwebtoken");
 
+/**
+ * Credentials used for standard API access
+ */
 const USERNAME = process.env.USERNAME || "test";
 const PASSWORD = process.env.PASSWORD || "test";
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "abc123";
+
+/**
+ * Access token used specifically for stats content worker.
+ * Only allows access to write metrics to Cloud Firestore.
+ */
+const STATS_WORKER_ACCESS_TOKEN =
+  process.env.STATS_WORKER_ACCESS_TOKEN || "abc123";
 
 /**
  * Validate incoming request with basic auth
@@ -58,8 +68,21 @@ function generateToken() {
   return jwt.sign({}, TOKEN_SECRET, { expiresIn: "6h" });
 }
 
+function validateStatsWorkerAccessToken(req, res, next) {
+  const header = req.get("Authorization");
+  if (!header) {
+    return res.status(400).send("Missing 'Authorization' header");
+  }
+
+  const accessToken = header.split(/\s+/).pop();
+  if (accessToken !== STATS_WORKER_ACCESS_TOKEN) {
+    return res.status(401).send("Unauthorized");
+  }
+}
+
 module.exports = {
   validateBasicAuth,
   validateToken,
   generateToken,
+  validateStatsWorkerAccessToken,
 };
