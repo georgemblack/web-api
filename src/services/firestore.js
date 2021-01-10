@@ -7,7 +7,16 @@ const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
 
+const COLLECTIONS_FOR_BACKUP = [
+  VIEW_COLLECTION_NAME,
+  LIKE_COLLECTION_NAME,
+  POST_COLLECTION_NAME,
+];
+const BACKUP_BUCKET_NAME = config.get("backupBucketName");
+const GCLOUD_PROJECT_ID = config.get("gcloudProjectId");
+
 const firestore = new Firestore();
+const admin = new Firestore.v1.FirestoreAdminClient();
 
 async function postItem(collection, payload) {
   const doc = firestore.doc(`${collection}/${uuid.v4()}`);
@@ -132,6 +141,24 @@ async function putPost(id, payload) {
   await doc.set(payload);
 }
 
+async function createBackup() {
+  try {
+    const responses = await admin.exportDocuments({
+      name: admin.databasePath(GCLOUD_PROJECT_ID, "(default)"),
+      outputUriPrefix: BACKUP_BUCKET_NAME,
+      collectionIds: COLLECTIONS_FOR_BACKUP,
+    });
+
+    const response = responses[0];
+    return {
+      backupId: response["name"],
+      backupPrefix: response["metadata"]["outputUriPrefix"],
+    };
+  } catch (err) {
+    throw new Error(`Create backup failed: ${err}`);
+  }
+}
+
 module.exports = {
   postItem,
   deleteItem,
@@ -141,4 +168,5 @@ module.exports = {
   getPost,
   putPost,
   getLikes,
+  createBackup,
 };
