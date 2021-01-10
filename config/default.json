@@ -1,5 +1,5 @@
 {
-  "gcloudProjectId": "oceanblue",
+  "gcloudProjectID": "oceanblue",
   "buildServiceEndpoint": "http://localhost:9002",
   "allowedOrigin": "*",
   "postCollectionName": "web-posts-test",

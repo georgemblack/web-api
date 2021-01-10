@@ -13,7 +13,7 @@ const COLLECTIONS_FOR_BACKUP = [
   POST_COLLECTION_NAME,
 ];
 const BACKUP_BUCKET_NAME = config.get("backupBucketName");
-const GCLOUD_PROJECT_ID = config.get("gcloudProjectId");
+const GCLOUD_PROJECT_ID = config.get("gcloudProjectID");
 
 const firestore = new Firestore();
 const admin = new Firestore.v1.FirestoreAdminClient();
@@ -151,7 +151,7 @@ async function createBackup() {
 
     const response = responses[0];
     return {
-      backupId: response["name"],
+      backupID: response["name"],
       backupPrefix: response["metadata"]["outputUriPrefix"],
     };
   } catch (err) {

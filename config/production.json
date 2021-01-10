@@ -1,5 +1,5 @@
 {
-  "gcloudProjectId": "oceanblue",
+  "gcloudProjectID": "oceanblue",
   "buildServiceEndpoint": "https://web-builder-zjxddraycq-ue.a.run.app",
   "allowedOrigin": "https://admin.george.black",
   "postCollectionName": "web-posts",
