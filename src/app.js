@@ -10,6 +10,7 @@ const ALLOWED_ORIGIN = config.get("allowedOrigin");
 const VIEW_COLLECTION = config.get("viewCollectionName");
 const LIKE_COLLECTION = config.get("likeCollectionName");
 const POST_COLLECTION = config.get("postCollectionName");
+const LINK_BIN_COLLECTION = config.get("linkBinCollectionName");
 
 // Express setup
 const app = express();
@@ -249,6 +250,24 @@ app.delete(
     }
   }
 );
+
+app.post("/bin/links", auth.validateToken, async (req, res) => {
+  let document = req.body;
+
+  // timestamp -> date object
+  if (!document.timestamp) {
+    return res.status(400).send("Bad request");
+  }
+  document.timestamp = new Date(document.timestamp);
+
+  try {
+    await firestore.postItem(LINK_BIN_COLLECTION, document);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
+  }
+  return res.status(201).send();
+});
 
 app.post(
   "/builds",
