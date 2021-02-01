@@ -10,14 +10,14 @@
     "lint:fix": "eslint --fix ./src"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^4.2.0",
+    "@google-cloud/firestore": "^4.9.1",
     "bowser": "^2.11.0",
-    "config": "^3.3.2",
+    "config": "^3.3.3",
     "express": "^4.17.1",
-    "google-auth-library": "^6.1.0",
+    "google-auth-library": "^6.1.6",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
-    "rate-limiter-flexible": "^2.1.10",
+    "rate-limiter-flexible": "^2.2.1",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
