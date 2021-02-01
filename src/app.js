@@ -257,6 +257,8 @@ app.post("/bin/links", auth.validateToken, async (req, res) => {
   // timestamp -> date object
   if (!document.timestamp) {
     console.log(document);
+    console.log(req)
+    console.log(req.body)
     return res.status(400).send("Bad request");
   }
   document.timestamp = new Date(document.timestamp);
