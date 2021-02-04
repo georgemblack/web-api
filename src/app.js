@@ -251,25 +251,31 @@ app.delete(
   }
 );
 
-app.post("/bin/links", auth.validateToken, async (req, res) => {
-  let document = req.body;
-  console.log(req.headers)
-  console.log(req.body)
+app.post(
+  "/bin/links",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    let document = req.body;
+    document.timestamp = new Date();
 
-  // // timestamp -> date object
-  // if (!document.timestamp) {
-  //   return res.status(400).send("Bad request");
-  // }
-  // document.timestamp = new Date(document.timestamp);
+    if (
+      !document.url ||
+      typeof document.url !== "string" ||
+      Object.keys(document).length != 2
+    ) {
+      return res.status(400).send("Validation failed");
+    }
 
-  try {
-    await firestore.postItem(LINK_BIN_COLLECTION, document);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
+    try {
+      await firestore.postItem(LINK_BIN_COLLECTION, document);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+    return res.status(201).send();
   }
-  return res.status(201).send();
-});
+);
 
 app.post(
   "/builds",

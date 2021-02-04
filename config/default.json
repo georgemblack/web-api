@@ -5,6 +5,6 @@
   "postCollectionName": "web-posts-test",
   "likeCollectionName": "web-likes-test",
   "viewCollectionName": "web-views-test",
-  "linkBinCollectionName": "bin-links-test",
+  "linkBinCollectionName": "web-bin-links-test",
   "backupBucketName": "gs://test-bucket.george.black"
 }

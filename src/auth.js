@@ -8,11 +8,10 @@ const PASSWORD = process.env.PASSWORD || "test";
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "abc123";
 
 /**
- * Access token used specifically for stats content worker.
- * Only allows access to write metrics to Cloud Firestore.
+ * Access token used for stats content worker, as well as private iOS shortcuts.
+ * Only allows write access to Cloud Firestore.
  */
-const STATS_WORKER_ACCESS_TOKEN =
-  process.env.STATS_WORKER_ACCESS_TOKEN || "abc123";
+const PRIVATE_ACCESS_TOKEN = process.env.PRIVATE_ACCESS_TOKEN || "abc123";
 
 /**
  * Validate incoming request with basic auth
@@ -75,7 +74,7 @@ function validateStatsWorkerAccessToken(req, res, next) {
   }
 
   const accessToken = header.split(/\s+/).pop();
-  if (accessToken !== STATS_WORKER_ACCESS_TOKEN) {
+  if (accessToken !== PRIVATE_ACCESS_TOKEN) {
     return res.status(401).send("Unauthorized");
   }
 
