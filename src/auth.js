@@ -67,7 +67,7 @@ function generateToken() {
   return jwt.sign({}, TOKEN_SECRET, { expiresIn: "6h" });
 }
 
-function validateStatsWorkerAccessToken(req, res, next) {
+function validatePrivateAccessToken(req, res, next) {
   const header = req.get("Authorization");
   if (!header) {
     return res.status(400).send("Missing 'Authorization' header");
@@ -85,5 +85,5 @@ module.exports = {
   validateBasicAuth,
   validateToken,
   generateToken,
-  validateStatsWorkerAccessToken,
+  validatePrivateAccessToken,
 };
