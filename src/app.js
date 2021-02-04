@@ -273,7 +273,7 @@ app.post(
       console.log(err);
       return res.status(500).send("Internal error");
     }
-    return res.status(201).send();
+    return res.status(201).send("Added to bin!");
   }
 );
 
