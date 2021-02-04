@@ -253,15 +253,14 @@ app.delete(
 
 app.post("/bin/links", auth.validateToken, async (req, res) => {
   let document = req.body;
+  console.log(req.headers)
+  console.log(req.body)
 
-  // timestamp -> date object
-  if (!document.timestamp) {
-    console.log(document);
-    console.log(req)
-    console.log(req.body)
-    return res.status(400).send("Bad request");
-  }
-  document.timestamp = new Date(document.timestamp);
+  // // timestamp -> date object
+  // if (!document.timestamp) {
+  //   return res.status(400).send("Bad request");
+  // }
+  // document.timestamp = new Date(document.timestamp);
 
   try {
     await firestore.postItem(LINK_BIN_COLLECTION, document);
