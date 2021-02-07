@@ -247,6 +247,21 @@ app.delete(
   }
 );
 
+app.get(
+  "/bin/links",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getLinkBin());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
 app.post(
   "/bin/links",
   rateLimiter.rateLimit,

@@ -6,6 +6,7 @@ const uuid = require("uuid");
 const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
+const LINK_BIN_COLLECTION_NAME = config.get("linkBinCollectionName");
 
 const COLLECTIONS_FOR_BACKUP = [
   VIEW_COLLECTION_NAME,
@@ -141,6 +142,25 @@ async function putPost(id, payload) {
   await doc.set(payload);
 }
 
+async function getLinkBin() {
+  const snapshot = await firestore
+    .collection("web-bin-links")
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const links = snapshot.docs.map((doc) => {
+    const payload = doc.data();
+    return {
+      id: doc.id,
+      ...payload,
+    };
+  });
+
+  return {
+    links,
+  };
+}
+
 async function createBackup() {
   try {
     const responses = await admin.exportDocuments({
@@ -168,5 +188,6 @@ module.exports = {
   getPost,
   putPost,
   getLikes,
+  getLinkBin,
   createBackup,
 };
