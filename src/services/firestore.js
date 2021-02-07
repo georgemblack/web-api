@@ -144,7 +144,7 @@ async function putPost(id, payload) {
 
 async function getLinkBin() {
   const snapshot = await firestore
-    .collection("web-bin-links")
+    .collection(LINK_BIN_COLLECTION_NAME)
     .orderBy("timestamp", "desc")
     .get();
 
