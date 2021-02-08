@@ -288,6 +288,21 @@ app.post(
   }
 );
 
+app.delete(
+  "/bin/links/:id",
+  rateLimiter.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    try {
+      await firestore.deleteItem(LINK_BIN_COLLECTION, req.params.id);
+      return res.status(200).send("Done");
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
 app.post(
   "/builds",
   rateLimiter.rateLimit,
