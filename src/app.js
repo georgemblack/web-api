@@ -1,5 +1,7 @@
 const express = require("express");
 const config = require("config");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const auth = require("./auth");
 const firestore = require("./services/firestore");
@@ -17,6 +19,19 @@ const app = express();
 app.use(express.json());
 const port = process.env.PORT || 9000;
 
+// OpenAPI setup
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "George's Web API",
+      version: "1.0.0",
+    },
+  },
+  apis: ["./app.js"],
+};
+const openApiSpec = swaggerJsdoc(options);
+
 /**
  * Standardized headers for all requests
  */
@@ -29,6 +44,9 @@ app.use((req, res, next) => {
   next();
 });
 
+/**
+ * Top-level routes
+ */
 app.options((req, res) => {
   res.sendStatus(200);
 });
@@ -36,6 +54,16 @@ app.options((req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Howdy!");
 });
+
+/**
+ * OpenAPI spec & docs
+ */
+app.get("/openapi-spec.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(openApiSpec);
+});
+
+app.use("/openapi-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 /**
  * Generate token for client, auth with username and password
