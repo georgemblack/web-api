@@ -55,7 +55,14 @@ async function getViews() {
       userAgent: payload.userAgent,
       browser: browserName,
       dataCenterCode: payload.dataCenterCode,
+      postalCode: payload.postalCode,
+      regionCode: payload.regionCode,
       countryCode: payload.countryCode,
+      continentCode: payload.continentCode,
+      regionName: payload.regionName,
+      cityName: payload.cityName,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
     };
   });
 
