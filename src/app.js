@@ -1,5 +1,7 @@
+const { Firestore } = require("@google-cloud/firestore");
 const express = require("express");
 const config = require("config");
+const isEqual = require("lodash.isequal");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -223,11 +225,25 @@ app.post(
   rateLimiter.rateLimit,
   auth.validateToken,
   async (req, res) => {
+    const expectedBodyAttributes = ["published", "content", "metadata"].sort()
+    const bodyAttributes = Object.keys(req.body).sort()
+
+    if (!isEqual(bodyAttributes, expectedBodyAttributes)) {
+      return res.status(400).send("Validation failed")
+    }
+
     const docPayload = {
       published: new Date(req.body.published),
       metadata: req.body.metadata,
       content: req.body.content,
     };
+
+    // If location provided, convert to Firestore geopoint
+    if ("location" in docPayload.metadata && Array.isArray(docPayload.metadata.location) && docPayload.metadata.location.length == 2) {
+      const lat = docPayload.metadata.location[0]
+      const lon = docPayload.metadata.location[1]
+      docPayload.metadata.location = new Firestore.GeoPoint(lat, lon)
+    }
 
     try {
       await firestore.postItem(POST_COLLECTION, docPayload);
