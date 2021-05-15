@@ -1,5 +1,6 @@
 const { Firestore } = require("@google-cloud/firestore");
 const express = require("express");
+const pino = require("pino-http");
 const config = require("config");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -18,7 +19,9 @@ const LINK_BIN_COLLECTION = config.get("linkBinCollectionName");
 
 // Express setup
 const app = express();
+const logger = pino();
 app.use(express.json());
+app.use(logger);
 const port = process.env.PORT || 9000;
 
 // OpenAPI setup
