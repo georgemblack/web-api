@@ -1,4 +1,3 @@
-const { Firestore } = require("@google-cloud/firestore");
 const express = require("express");
 const pino = require("pino-http");
 const config = require("config");
@@ -150,23 +149,10 @@ app.post(
   "/likes",
   rateLimiter.rateLimit,
   auth.validateToken,
+  validate.validateLikeBody,
   async (req, res) => {
-    if (
-      typeof req.body.title !== "string" ||
-      req.body.title === "" ||
-      typeof req.body.url !== "string" ||
-      req.body.url === ""
-    ) {
-      return res.status(400).send("Validation failed");
-    }
-
-    const docPayload = {
-      title: req.body.title,
-      url: req.body.url,
-      timestamp: new Date(),
-    };
-
     try {
+      const docPayload = format.formatLikePayload(req.body);
       await firestore.postItem(LIKE_COLLECTION, docPayload);
       return res.status(201).send("Done");
     } catch (err) {

@@ -23,6 +23,18 @@ function formatPostPayload(requestBody) {
   return docPayload;
 }
 
+/**
+ * Formats a raw request body into a document that can be stored in Firestore.
+ */
+function formatLikePayload(requestBody) {
+  return {
+    title: req.body.title,
+    url: req.body.url,
+    timestamp: new Date(),
+  };
+}
+
 module.exports = {
   formatPostPayload,
+  formatLikePayload,
 };
