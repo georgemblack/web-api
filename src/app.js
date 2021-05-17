@@ -7,7 +7,7 @@ const swaggerUi = require("swagger-ui-express");
 const auth = require("./auth");
 const firestore = require("./services/firestore");
 const build = require("./services/build");
-const rateLimiter = require("./rateLimiter");
+const rateLimit = require("./rateLimit");
 const validate = require("./validate");
 const format = require("./format");
 
@@ -75,7 +75,7 @@ app.use("/openapi-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
  */
 app.post(
   "/auth",
-  rateLimiter.intenseRateLimit,
+  rateLimit.intenseRateLimit,
   auth.validateBasicAuth,
   async (req, res) => {
     return res.status(200).send({ token: auth.generateToken() });
@@ -84,7 +84,7 @@ app.post(
 
 app.get(
   "/views",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -117,7 +117,7 @@ app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
 
 app.delete(
   "/views/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     try {
@@ -132,7 +132,7 @@ app.delete(
 
 app.get(
   "/likes",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -147,7 +147,7 @@ app.get(
 
 app.post(
   "/likes",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   validate.validateLikeBody,
   async (req, res) => {
@@ -164,7 +164,7 @@ app.post(
 
 app.delete(
   "/likes/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     try {
@@ -179,7 +179,7 @@ app.delete(
 
 app.get(
   "/posts",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -197,7 +197,7 @@ app.get(
 
 app.get(
   "/posts/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -212,7 +212,7 @@ app.get(
 
 app.post(
   "/posts",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   validate.validatePostBody,
   async (req, res) => {
@@ -229,7 +229,7 @@ app.post(
 
 app.put(
   "/posts/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   validate.validatePostBody,
   async (req, res) => {
@@ -246,7 +246,7 @@ app.put(
 
 app.delete(
   "/posts/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     try {
@@ -261,7 +261,7 @@ app.delete(
 
 app.get(
   "/bin/links",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -276,7 +276,7 @@ app.get(
 
 app.post(
   "/bin/links",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validatePrivateAccessToken,
   async (req, res) => {
     let document = req.body;
@@ -302,7 +302,7 @@ app.post(
 
 app.delete(
   "/bin/links/:id",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     try {
@@ -317,7 +317,7 @@ app.delete(
 
 app.post(
   "/builds",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
@@ -332,7 +332,7 @@ app.post(
 
 app.post(
   "/backups",
-  rateLimiter.rateLimit,
+  rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
     res.header("Content-Type", "application/json");
