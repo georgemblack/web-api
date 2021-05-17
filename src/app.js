@@ -93,16 +93,9 @@ app.get("/views", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
 });
 
 app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
-  let document = req.body;
-
-  // timestamp -> date object
-  if (!document.timestamp) {
-    return res.status(400).send("Bad request");
-  }
-  document.timestamp = new Date(document.timestamp);
-
   try {
-    await firestore.postItem(VIEW_COLLECTION, document);
+    const docPayload = format.formatViewPayload(req.body);
+    await firestore.postItem(VIEW_COLLECTION, docPayload);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal error");
@@ -263,20 +256,11 @@ app.post(
   "/bin/links",
   rateLimit.rateLimit,
   auth.validatePrivateAccessToken,
+  validate.validateLinkBinBody,
   async (req, res) => {
-    let document = req.body;
-    document.timestamp = new Date();
-
-    if (
-      !document.url ||
-      typeof document.url !== "string" ||
-      Object.keys(document).length != 2
-    ) {
-      return res.status(400).send("Validation failed");
-    }
-
     try {
-      await firestore.postItem(LINK_BIN_COLLECTION, document);
+      const docPayload = format.formatLinkBinPayload(req.body);
+      await firestore.postItem(LINK_BIN_COLLECTION, docPayload);
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal error");

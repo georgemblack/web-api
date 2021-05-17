@@ -34,7 +34,27 @@ function formatLikePayload(requestBody) {
   };
 }
 
+/**
+ * Formats a raw request body into a document that can be stored in Firestore.
+ */
+function formatLinkBinPayload(requestBody) {
+  return {
+    url: req.body.url,
+    timestamp: new Date(),
+  };
+}
+
+/**
+ * Formats a raw request body into a document that can be stored in Firestore.
+ */
+function formatViewPayload(requestBody) {
+  requestBody.timestamp = new Date(requestBody.timestamp);
+  return requestBody;
+}
+
 module.exports = {
   formatPostPayload,
   formatLikePayload,
+  formatLinkBinPayload,
+  formatViewPayload,
 };

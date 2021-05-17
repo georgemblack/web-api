@@ -73,7 +73,23 @@ function validateLikeBody(req, res, next) {
   next();
 }
 
+function validateLinkBinBody(req, res, next) {
+  const body = req.body;
+  if (!body) {
+    return res.status(400).send("Validation failed");
+  }
+  if (!("url" in body)) {
+    return res.status(400).send("Validation failed");
+  }
+  if (typeof body.url !== "string") {
+    return res.status(400).send("Validation failed");
+  }
+
+  next();
+}
+
 module.exports = {
   validatePostBody,
   validateLikeBody,
+  validateLinkBinBody,
 };
