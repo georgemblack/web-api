@@ -82,15 +82,20 @@ app.post(
   }
 );
 
-app.get("/views", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
-  res.header("Content-Type", "application/json");
-  try {
-    return res.status(200).send(await firestore.getViews());
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
+app.get(
+  "/stats/views",
+  rateLimit.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getViews());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
   }
-});
+);
 
 app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
   try {
@@ -104,7 +109,7 @@ app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
 });
 
 app.delete(
-  "/views/:id",
+  "/stats/views/:id",
   rateLimit.rateLimit,
   auth.validateToken,
   async (req, res) => {
