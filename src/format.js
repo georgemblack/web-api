@@ -5,9 +5,9 @@ const { Firestore } = require("@google-cloud/firestore");
  */
 function formatPostPayload(requestBody) {
   const docPayload = {
-    published: new Date(req.body.published),
-    metadata: req.body.metadata,
-    content: req.body.content,
+    published: new Date(requestBody.published),
+    metadata: requestBody.metadata,
+    content: requestBody.content,
   };
 
   // If location provided, convert to Firestore geopoint
@@ -28,8 +28,8 @@ function formatPostPayload(requestBody) {
  */
 function formatLikePayload(requestBody) {
   return {
-    title: req.body.title,
-    url: req.body.url,
+    title: requestBody.title,
+    url: requestBody.url,
     timestamp: new Date(),
   };
 }
@@ -39,7 +39,7 @@ function formatLikePayload(requestBody) {
  */
 function formatLinkBinPayload(requestBody) {
   return {
-    url: req.body.url,
+    url: requestBody.url,
     timestamp: new Date(),
   };
 }
