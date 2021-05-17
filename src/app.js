@@ -245,6 +245,7 @@ app.put(
   "/posts/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
+  validator.validatePostBody,
   async (req, res) => {
     const docPayload = {
       published: new Date(req.body.published),
