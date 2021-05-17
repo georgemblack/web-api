@@ -10,6 +10,7 @@ const firestore = require("./services/firestore");
 const build = require("./services/build");
 const rateLimiter = require("./rateLimiter");
 const validator = require("./validator");
+const format = require("./format");
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
 const VIEW_COLLECTION = config.get("viewCollectionName");
@@ -229,20 +230,8 @@ app.post(
   auth.validateToken,
   validator.validatePostBody,
   async (req, res) => {
-    const docPayload = {
-      published: new Date(req.body.published),
-      metadata: req.body.metadata,
-      content: req.body.content,
-    };
-
-    // If location provided, convert to Firestore geopoint
-    if ("location" in docPayload.metadata) {
-      const lat = docPayload.metadata.location[0];
-      const lon = docPayload.metadata.location[1];
-      docPayload.metadata.location = new Firestore.GeoPoint(lat, lon);
-    }
-
     try {
+      const docPayload = format.formatPostPayload(req.body)
       await firestore.postItem(POST_COLLECTION, docPayload);
       return res.status(201).send("Done");
     } catch (err) {

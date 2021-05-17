@@ -22,6 +22,10 @@ function validatePostBody(req, res, next) {
     }
   });
 
+  /**
+   * Location should be formatted as array with two strings, i.e. ["12.34", "56.78"]
+   * Both strings should be coercible to numbers.
+   */
   if ("location" in body.metadata) {
     const location = body.metadata.location;
     if (!Array.isArray(location)) {
@@ -30,7 +34,10 @@ function validatePostBody(req, res, next) {
     if (location.length != 2) {
       return res.status(400).send("Validation failed");
     }
-    if (typeof location[0] != "number" || typeof location[1] != "number") {
+    if (typeof location[0] != "string" || typeof location[1] != "string") {
+      return res.status(400).send("Validation failed");
+    }
+    if (!Number(location[0]) || !Number(location[1]) ) {
       return res.status(400).send("Validation failed");
     }
   }
