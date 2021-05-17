@@ -9,7 +9,7 @@ const auth = require("./auth");
 const firestore = require("./services/firestore");
 const build = require("./services/build");
 const rateLimiter = require("./rateLimiter");
-const validator = require("./validator");
+const validate = require("./validate");
 const format = require("./format");
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
@@ -228,10 +228,10 @@ app.post(
   "/posts",
   rateLimiter.rateLimit,
   auth.validateToken,
-  validator.validatePostBody,
+  validate.validatePostBody,
   async (req, res) => {
     try {
-      const docPayload = format.formatPostPayload(req.body)
+      const docPayload = format.formatPostPayload(req.body);
       await firestore.postItem(POST_COLLECTION, docPayload);
       return res.status(201).send("Done");
     } catch (err) {
@@ -245,15 +245,10 @@ app.put(
   "/posts/:id",
   rateLimiter.rateLimit,
   auth.validateToken,
-  validator.validatePostBody,
+  validate.validatePostBody,
   async (req, res) => {
-    const docPayload = {
-      published: new Date(req.body.published),
-      metadata: req.body.metadata,
-      content: req.body.content,
-    };
-
     try {
+      const docPayload = format.formatPostPayload(req.body);
       await firestore.putPost(req.params.id, docPayload);
       return res.status(200).send("Done");
     } catch (err) {

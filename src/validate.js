@@ -37,7 +37,7 @@ function validatePostBody(req, res, next) {
     if (typeof location[0] != "string" || typeof location[1] != "string") {
       return res.status(400).send("Validation failed");
     }
-    if (!Number(location[0]) || !Number(location[1]) ) {
+    if (!Number(location[0]) || !Number(location[1])) {
       return res.status(400).send("Validation failed");
     }
   }
