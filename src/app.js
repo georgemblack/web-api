@@ -4,11 +4,11 @@ const config = require("config");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const auth = require("./auth");
+const auth = require("./middlewares/auth");
+const rateLimit = require("./middlewares/rateLimit");
+const validate = require("./middlewares/validate");
 const firestore = require("./services/firestore");
 const build = require("./services/build");
-const rateLimit = require("./rateLimit");
-const validate = require("./validate");
 const format = require("./format");
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
@@ -82,20 +82,15 @@ app.post(
   }
 );
 
-app.get(
-  "/views",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    res.header("Content-Type", "application/json");
-    try {
-      return res.status(200).send(await firestore.getViews());
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
+app.get("/views", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    return res.status(200).send(await firestore.getViews());
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
   }
-);
+});
 
 app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
   let document = req.body;
@@ -130,20 +125,15 @@ app.delete(
   }
 );
 
-app.get(
-  "/likes",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    res.header("Content-Type", "application/json");
-    try {
-      return res.status(200).send(await firestore.getLikes());
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
+app.get("/likes", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    return res.status(200).send(await firestore.getLikes());
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
   }
-);
+});
 
 app.post(
   "/likes",
@@ -177,23 +167,18 @@ app.delete(
   }
 );
 
-app.get(
-  "/posts",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    res.header("Content-Type", "application/json");
-    try {
-      if ("published" in req.query) {
-        return res.status(200).send(await firestore.getPublishedPosts());
-      }
-      return res.status(200).send(await firestore.getPosts());
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
+app.get("/posts", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    if ("published" in req.query) {
+      return res.status(200).send(await firestore.getPublishedPosts());
     }
+    return res.status(200).send(await firestore.getPosts());
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal error");
   }
-);
+});
 
 app.get(
   "/posts/:id",
