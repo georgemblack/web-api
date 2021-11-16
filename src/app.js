@@ -12,7 +12,6 @@ const build = require("./services/build");
 const format = require("./format");
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
-const VIEW_COLLECTION = config.get("viewCollectionName");
 const LIKE_COLLECTION = config.get("likeCollectionName");
 const POST_COLLECTION = config.get("postCollectionName");
 const LINK_BIN_COLLECTION = config.get("linkBinCollectionName");
@@ -44,8 +43,6 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
   res.header("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Accept-CH", "UA, Platform, Model, Arch, Viewport-Width, Width");
-  res.header("Accept-CH-Lifetime", "2592000");
   next();
 });
 
@@ -79,47 +76,6 @@ app.post(
   auth.validateBasicAuth,
   async (req, res) => {
     return res.status(200).send({ token: auth.generateToken() });
-  }
-);
-
-app.get(
-  "/stats/views",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    res.header("Content-Type", "application/json");
-    try {
-      return res.status(200).send(await firestore.getViews());
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
-  }
-);
-
-app.post("/stats/views", auth.validatePrivateAccessToken, async (req, res) => {
-  try {
-    const docPayload = format.formatViewPayload(req.body);
-    await firestore.postItem(VIEW_COLLECTION, docPayload);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal error");
-  }
-  return res.status(200).send();
-});
-
-app.delete(
-  "/stats/views/:id",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    try {
-      await firestore.deleteItem(VIEW_COLLECTION, req.params.id);
-      return res.status(201).send("Done");
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
   }
 );
 

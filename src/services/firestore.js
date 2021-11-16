@@ -1,18 +1,12 @@
 const { Firestore } = require("@google-cloud/firestore");
 const config = require("config");
-const bowser = require("bowser");
 const uuid = require("uuid");
 
-const VIEW_COLLECTION_NAME = config.get("viewCollectionName");
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
 const LINK_BIN_COLLECTION_NAME = config.get("linkBinCollectionName");
 
-const COLLECTIONS_FOR_BACKUP = [
-  VIEW_COLLECTION_NAME,
-  LIKE_COLLECTION_NAME,
-  POST_COLLECTION_NAME,
-];
+const COLLECTIONS_FOR_BACKUP = [LIKE_COLLECTION_NAME, POST_COLLECTION_NAME];
 const BACKUP_BUCKET_NAME = config.get("backupBucketName");
 const GCLOUD_PROJECT_ID = config.get("gcloudProjectID");
 
@@ -27,48 +21,6 @@ async function postItem(collection, payload) {
 async function deleteItem(collection, id) {
   const doc = firestore.doc(`${collection}/${id}`);
   await doc.delete();
-}
-
-async function getViews() {
-  const date = new Date();
-  date.setDate(date.getDate() - 30);
-
-  const snapshot = await firestore
-    .collection(VIEW_COLLECTION_NAME)
-    .where("timestamp", ">", date)
-    .orderBy("timestamp", "desc")
-    .get();
-
-  const views = snapshot.docs.map((doc) => {
-    const payload = doc.data();
-    const browser = bowser.getParser(payload.userAgent);
-    const browserName = browser.getBrowserName();
-
-    return {
-      id: doc.id,
-      timestamp: payload.timestamp._seconds,
-      pathname: payload.pathname,
-      referrer: payload.referrer || "",
-      windowInnerWidth: payload.windowInnerWidth,
-      timezone: payload.timezone,
-      hostname: payload.hostname,
-      userAgent: payload.userAgent,
-      browser: browserName,
-      dataCenterCode: payload.dataCenterCode,
-      postalCode: payload.postalCode,
-      regionCode: payload.regionCode,
-      countryCode: payload.countryCode,
-      continentCode: payload.continentCode,
-      regionName: payload.regionName,
-      cityName: payload.cityName,
-      latitude: payload.latitude,
-      longitude: payload.longitude,
-    };
-  });
-
-  return {
-    views,
-  };
 }
 
 async function getLikes() {
@@ -189,7 +141,6 @@ async function createBackup() {
 module.exports = {
   postItem,
   deleteItem,
-  getViews,
   getPosts,
   getPublishedPosts,
   getPost,

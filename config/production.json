@@ -4,7 +4,6 @@
   "allowedOrigin": "https://admin.george.black",
   "postCollectionName": "web-posts",
   "likeCollectionName": "web-likes",
-  "viewCollectionName": "web-views",
   "linkBinCollectionName": "web-bin-links",
   "backupBucketName": "gs://firestore-backups.george.black"
 }
