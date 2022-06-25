@@ -4,7 +4,6 @@ const uuid = require("uuid");
 
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
-const LINK_BIN_COLLECTION_NAME = config.get("linkBinCollectionName");
 
 const COLLECTIONS_FOR_BACKUP = [LIKE_COLLECTION_NAME, POST_COLLECTION_NAME];
 const BACKUP_BUCKET_NAME = config.get("backupBucketName");
@@ -101,25 +100,6 @@ async function putPost(id, payload) {
   await doc.set(payload);
 }
 
-async function getLinkBin() {
-  const snapshot = await firestore
-    .collection(LINK_BIN_COLLECTION_NAME)
-    .orderBy("timestamp", "desc")
-    .get();
-
-  const links = snapshot.docs.map((doc) => {
-    const payload = doc.data();
-    return {
-      id: doc.id,
-      ...payload,
-    };
-  });
-
-  return {
-    links,
-  };
-}
-
 async function createBackup() {
   try {
     const responses = await admin.exportDocuments({
@@ -146,6 +126,5 @@ module.exports = {
   getPost,
   putPost,
   getLikes,
-  getLinkBin,
   createBackup,
 };

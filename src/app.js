@@ -14,7 +14,6 @@ const format = require("./format");
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
 const LIKE_COLLECTION = config.get("likeCollectionName");
 const POST_COLLECTION = config.get("postCollectionName");
-const LINK_BIN_COLLECTION = config.get("linkBinCollectionName");
 
 // Express setup
 const app = express();
@@ -191,53 +190,6 @@ app.delete(
     try {
       await firestore.deleteItem(POST_COLLECTION, req.params.id);
       return res.status(201).send("Done");
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
-  }
-);
-
-app.get(
-  "/bin/links",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    res.header("Content-Type", "application/json");
-    try {
-      return res.status(200).send(await firestore.getLinkBin());
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
-  }
-);
-
-app.post(
-  "/bin/links",
-  rateLimit.rateLimit,
-  auth.validatePrivateAccessToken,
-  validate.validateLinkBinBody,
-  async (req, res) => {
-    try {
-      const docPayload = format.formatLinkBinPayload(req.body);
-      await firestore.postItem(LINK_BIN_COLLECTION, docPayload);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal error");
-    }
-    return res.status(201).send("Added to bin!");
-  }
-);
-
-app.delete(
-  "/bin/links/:id",
-  rateLimit.rateLimit,
-  auth.validateToken,
-  async (req, res) => {
-    try {
-      await firestore.deleteItem(LINK_BIN_COLLECTION, req.params.id);
-      return res.status(200).send("Done");
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal error");
