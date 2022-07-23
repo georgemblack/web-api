@@ -1,6 +1,6 @@
-const { Firestore } = require("@google-cloud/firestore");
-const config = require("config");
-const uuid = require("uuid");
+import Firestore from "@google-cloud/firestore";
+import config from "config";
+import { v4 as uuidv4 } from "uuid";
 
 const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
 const POST_COLLECTION_NAME = config.get("postCollectionName");
@@ -9,21 +9,21 @@ const COLLECTIONS_FOR_BACKUP = [LIKE_COLLECTION_NAME, POST_COLLECTION_NAME];
 const BACKUP_BUCKET_NAME = config.get("backupBucketName");
 const GCLOUD_PROJECT_ID = config.get("gcloudProjectID");
 
-const firestore = new Firestore();
+const firestoreService = new Firestore();
 const admin = new Firestore.v1.FirestoreAdminClient();
 
 async function postItem(collection, payload) {
-  const doc = firestore.doc(`${collection}/${uuid.v4()}`);
+  const doc = firestoreService.doc(`${collection}/${uuidv4()}`);
   await doc.set(payload);
 }
 
 async function deleteItem(collection, id) {
-  const doc = firestore.doc(`${collection}/${id}`);
+  const doc = firestoreService.doc(`${collection}/${id}`);
   await doc.delete();
 }
 
 async function getLikes() {
-  const snapshot = await firestore
+  const snapshot = await firestoreService
     .collection(LIKE_COLLECTION_NAME)
     .orderBy("timestamp", "desc")
     .get();
@@ -42,7 +42,7 @@ async function getLikes() {
 }
 
 async function getPosts() {
-  const snapshot = await firestore
+  const snapshot = await firestoreService
     .collection(POST_COLLECTION_NAME)
     .orderBy("published", "desc")
     .get();
@@ -61,7 +61,7 @@ async function getPosts() {
 }
 
 async function getPublishedPosts() {
-  const snapshot = await firestore
+  const snapshot = await firestoreService
     .collection(POST_COLLECTION_NAME)
     .orderBy("published", "desc")
     .get();
@@ -87,7 +87,7 @@ async function getPublishedPosts() {
 }
 
 async function getPost(id) {
-  const doc = await firestore.doc(`${POST_COLLECTION_NAME}/${id}`).get();
+  const doc = await firestoreService.doc(`${POST_COLLECTION_NAME}/${id}`).get();
   const payload = doc.data();
   return {
     id: doc.id,
@@ -96,7 +96,7 @@ async function getPost(id) {
 }
 
 async function putPost(id, payload) {
-  const doc = firestore.doc(`${POST_COLLECTION_NAME}/${id}`);
+  const doc = firestoreService.doc(`${POST_COLLECTION_NAME}/${id}`);
   await doc.set(payload);
 }
 
@@ -118,13 +118,13 @@ async function createBackup() {
   }
 }
 
-module.exports = {
+export default {
   postItem,
   deleteItem,
+  getLikes,
   getPosts,
   getPublishedPosts,
   getPost,
   putPost,
-  getLikes,
   createBackup,
 };

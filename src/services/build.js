@@ -1,7 +1,7 @@
-const fetch = require("node-fetch");
-const config = require("config");
+import fetch from "node-fetch";
+import config from "config";
 
-const { GoogleAuth } = require("google-auth-library");
+import { GoogleAuth } from "google-auth-library";
 const auth = new GoogleAuth();
 
 const SERVICE_URL = config.get("buildServiceEndpoint");
@@ -21,6 +21,6 @@ async function postBuild() {
   return await buildResponse.json();
 }
 
-module.exports = {
+export default {
   postBuild,
 };

@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 /**
  * Credentials used for standard API access
@@ -61,8 +61,4 @@ function generateToken() {
   return jwt.sign({}, TOKEN_SECRET, { expiresIn: "6h" });
 }
 
-module.exports = {
-  validateBasicAuth,
-  validateToken,
-  generateToken,
-};
+export default { validateBasicAuth, validateToken, generateToken };

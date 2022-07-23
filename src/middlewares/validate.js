@@ -1,4 +1,4 @@
-const isEqual = require("lodash.isequal");
+import isEqual from "lodash.isequal";
 
 function validatePostBody(req, res, next) {
   const body = req.body;
@@ -73,7 +73,7 @@ function validateLikeBody(req, res, next) {
   next();
 }
 
-module.exports = {
+export default {
   validatePostBody,
   validateLikeBody,
 };

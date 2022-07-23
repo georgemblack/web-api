@@ -1,4 +1,4 @@
-const { RateLimiterMemory } = require("rate-limiter-flexible");
+import { RateLimiterMemory } from "rate-limiter-flexible";
 
 const rateLimiter = new RateLimiterMemory({
   points: 30,
@@ -29,7 +29,7 @@ const intenseRateLimit = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   rateLimit,
   intenseRateLimit,
 };

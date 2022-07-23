@@ -1,9 +1,9 @@
-FROM node:17-stretch AS build-env
+FROM node:18 AS build-env
 ADD . /build
 WORKDIR /build
-RUN yarn
+RUN yarn && yarn build
 
-FROM node:17-alpine
+FROM node:18-alpine
 ENV NODE_ENV=production
 COPY --from=build-env /build /app
 WORKDIR /app

@@ -1,15 +1,16 @@
-const express = require("express");
-const pino = require("pino-http");
-const config = require("config");
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
+import express from "express";
+import pino from "pino-http";
+import config from "config";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
-const auth = require("./middlewares/auth");
-const rateLimit = require("./middlewares/rateLimit");
-const validate = require("./middlewares/validate");
-const firestore = require("./services/firestore");
-const build = require("./services/build");
-const format = require("./format");
+import format from "./format.js";
+import auth from "./middlewares/auth.js";
+import rateLimit from "./middlewares/rateLimit.js";
+import validate from "./middlewares/validate.js";
+import generate from "./services/content-generator/index.js";
+import firestore from "./services/firestore.js";
+import build from "./services/build.js";
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
 const LIKE_COLLECTION = config.get("likeCollectionName");
@@ -196,6 +197,17 @@ app.delete(
     }
   }
 );
+
+app.post("/content", auth.validateToken, async (req, res) => {
+  res.header("Content-Type", "application/json");
+  try {
+    const result = generate(req.body.content);
+    return res.status(200).send(result);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Bad request");
+  }
+});
 
 app.post(
   "/builds",
