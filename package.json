@@ -6,9 +6,9 @@
   "author": "georgemblack <contact@george.black>",
   "license": "MIT",
   "scripts": {
-    "start-dev": "babel ./src -d ./dist && node ./dist/app.js",
-    "start-prod": "node ./dist/app.js",
+    "start": "node ./dist/app.js",
     "build": "babel ./src -d ./dist",
+    "dev": "babel ./src -d ./dist && node ./dist/app.js",
     "format": "prettier ./src --write",
     "lint": "eslint ./src --fix"
   },
