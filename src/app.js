@@ -124,10 +124,23 @@ app.delete(
 app.get("/posts", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
   res.header("Content-Type", "application/json");
   try {
+    let result;
     if ("published" in req.query) {
-      return res.status(200).send(await firestore.getPublishedPosts());
+      result = await firestore.getPublishedPosts();
+    } else {
+      result = await firestore.getPosts();
     }
-    return res.status(200).send(await firestore.getPosts());
+
+    // Transform result
+    const processedPosts = result.posts.map((post) => {
+      const { html, htmlPreview } = generate(post.content);
+      post.contentHtml = html;
+      post.contentHtmlPreview = htmlPreview;
+      return post;
+    });
+    result.posts = processedPosts;
+
+    return res.status(200).send(result);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal error");
@@ -141,7 +154,13 @@ app.get(
   async (req, res) => {
     res.header("Content-Type", "application/json");
     try {
-      return res.status(200).send(await firestore.getPost(req.params.id));
+      let post = await firestore.getPost(req.params.id);
+
+      const { html, htmlPreview } = generate(post.content);
+      post.contentHtml = html;
+      post.contentHtmlPreview = htmlPreview;
+
+      return res.status(200).send(post);
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal error");
