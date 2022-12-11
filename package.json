@@ -16,7 +16,7 @@
     "@google-cloud/firestore": "^4.15.1",
     "@markdoc/markdoc": "^0.1.4",
     "config": "^3.3.6",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "google-auth-library": "^7.10.0",
     "jsonwebtoken": "^8.5.1",
     "lodash.isequal": "^4.5.0",
