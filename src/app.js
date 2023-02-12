@@ -1,8 +1,6 @@
 import express from "express";
 import pino from "pino-http";
 import config from "config";
-import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
 
 import format from "./format.js";
 import auth from "./middlewares/auth.js";
@@ -22,19 +20,6 @@ const logger = pino();
 app.use(express.json());
 app.use(logger);
 const port = process.env.PORT || 9000;
-
-// OpenAPI setup
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "George's Web API",
-      version: "1.0.0",
-    },
-  },
-  apis: ["./app.js"],
-};
-const openApiSpec = swaggerJsdoc(options);
 
 /**
  * Standardized headers for all requests
@@ -56,16 +41,6 @@ app.options((req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Howdy!");
 });
-
-/**
- * OpenAPI spec & docs
- */
-app.get("/openapi-spec.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.send(openApiSpec);
-});
-
-app.use("/openapi-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 /**
  * Generate token for client, auth with username and password
