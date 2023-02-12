@@ -4,5 +4,5 @@
   "containerEnv": {
     "GOOGLE_APPLICATION_CREDENTIALS": "google-application-credentials.json"
   },
-  "postCreateCommand": "echo $GOOGLE_APPLICATION_CREDENTIALS_CONTENTS >> google-application-credentials.json"
+  "postCreateCommand": "echo \"$GOOGLE_APPLICATION_CREDENTIALS_CONTENTS\" >> google-application-credentials.json"
 }
