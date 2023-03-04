@@ -10,15 +10,15 @@ function Image({ urls, alt, children }) {
       <picture>
         {avifUrl && (
           <source
-            srcSet={"https://george.black/assets" + avifUrl}
+            srcSet={"/assets" + avifUrl}
             type="image/avif"
           />
         )}
         {jpgUrl && (
-          <img src={"https://george.black/assets" + jpgUrl} alt={alt} />
+          <img src={"/assets" + jpgUrl} alt={alt} />
         )}
         {pngUrl && (
-          <img src={"https://george.black/assets" + pngUrl} alt={alt} />
+          <img src={"/assets" + pngUrl} alt={alt} />
         )}
       </picture>
       {children && <figcaption>{children}</figcaption>}
