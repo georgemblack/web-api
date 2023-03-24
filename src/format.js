@@ -13,16 +13,6 @@ function formatPostPayload(requestBody) {
     tags: requestBody.tags || [],
   };
 
-  // If location provided, convert to Firestore geopoint
-  if ("location" in requestBody.metadata) {
-    const lat = requestBody.metadata.location[0];
-    const lon = requestBody.metadata.location[1];
-    docPayload.location = new Firestore.GeoPoint(
-      Number(lat),
-      Number(lon)
-    );
-  }
-
   return docPayload;
 }
 

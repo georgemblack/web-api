@@ -8,18 +8,9 @@ function Image({ urls, alt, children }) {
   return (
     <figure>
       <picture>
-        {avifUrl && (
-          <source
-            srcSet={"/assets" + avifUrl}
-            type="image/avif"
-          />
-        )}
-        {jpgUrl && (
-          <img src={"/assets" + jpgUrl} alt={alt} />
-        )}
-        {pngUrl && (
-          <img src={"/assets" + pngUrl} alt={alt} />
-        )}
+        {avifUrl && <source srcSet={"/assets" + avifUrl} type="image/avif" />}
+        {jpgUrl && <img src={"/assets" + jpgUrl} alt={alt} />}
+        {pngUrl && <img src={"/assets" + pngUrl} alt={alt} />}
       </picture>
       {children && <figcaption>{children}</figcaption>}
     </figure>
