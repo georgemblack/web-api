@@ -76,9 +76,7 @@ async function getPublishedPosts() {
 
   // filter
   posts = posts.filter((post) => {
-    if (!("metadata" in post)) return false;
-    if (!("draft" in post.metadata)) return false;
-    return !post.metadata.draft;
+    return !post.draft;
   });
 
   return {
