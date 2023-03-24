@@ -6,18 +6,11 @@ function validatePostBody(req, res, next) {
     return res.status(400).send("Validation failed");
   }
 
-  const requiredBodyAttributes = ["published", "content", "metadata"].sort();
+  const requiredBodyAttributes = ["title", "slug", "draft", "published", "content"].sort();
   const bodyAttributes = Object.keys(body).sort();
 
-  if (!isEqual(bodyAttributes, requiredBodyAttributes)) {
-    return res.status(400).send("Validation failed");
-  }
-
-  const requiredMetadataAttributes = ["slug", "title"];
-  const metadataAttributes = Object.keys(body.metadata);
-
-  requiredMetadataAttributes.forEach((required) => {
-    if (!metadataAttributes.includes(required)) {
+  requiredBodyAttributes.forEach((required) => {
+    if (!bodyAttributes.includes(required)) {
       return res.status(400).send("Validation failed");
     }
   });
@@ -26,8 +19,8 @@ function validatePostBody(req, res, next) {
    * Location should be formatted as array with two strings, i.e. ["12.34", "56.78"]
    * Both strings should be coercible to numbers.
    */
-  if ("location" in body.metadata) {
-    const location = body.metadata.location;
+  if ("location" in body) {
+    const location = body.location;
     if (!Array.isArray(location)) {
       return res.status(400).send("Validation failed");
     }
