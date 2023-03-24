@@ -111,6 +111,14 @@ app.get("/posts", rateLimit.rateLimit, auth.validateToken, async (req, res) => {
       const { html, htmlPreview } = generate(post.content);
       post.contentHtml = html;
       post.contentHtmlPreview = htmlPreview;
+
+      // Temporary: for transitioning data structure
+      if (post.metadata) {
+        post.title = post.metadata.title;
+        post.slug = post.metadata.slug;
+        post.draft = post.metadata.draft;
+      }
+
       return post;
     });
     result.posts = processedPosts;
