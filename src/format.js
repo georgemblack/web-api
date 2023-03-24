@@ -5,16 +5,19 @@ import Firestore from "@google-cloud/firestore";
  */
 function formatPostPayload(requestBody) {
   const docPayload = {
+    title: requestBody.title,
+    slug: requestBody.slug,
     published: new Date(requestBody.published),
-    metadata: requestBody.metadata,
     content: requestBody.content,
+    draft: requestBody.draft,
+    tags: requestBody.tags || [],
   };
 
   // If location provided, convert to Firestore geopoint
-  if ("location" in docPayload.metadata) {
-    const lat = docPayload.metadata.location[0];
-    const lon = docPayload.metadata.location[1];
-    docPayload.metadata.location = new Firestore.GeoPoint(
+  if ("location" in requestBody.metadata) {
+    const lat = requestBody.metadata.location[0];
+    const lon = requestBody.metadata.location[1];
+    docPayload.location = new Firestore.GeoPoint(
       Number(lat),
       Number(lon)
     );
