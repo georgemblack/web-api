@@ -1,5 +1,3 @@
-import Firestore from "@google-cloud/firestore";
-
 /**
  * Formats a raw request body into a document that can be stored in Firestore.
  */
