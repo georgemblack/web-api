@@ -2,9 +2,9 @@ import React from "react";
 import * as ReactDOMServer from "react-dom/server";
 import Markdoc from "@markdoc/markdoc";
 
-import Image from "./tags/Image.js";
-import Border from "./tags/Border.js";
-import { image, border } from "./schema.js";
+import Image from "./tags/Image";
+import Border from "./tags/Border";
+import { image, border } from "./schema";
 
 const config = {
   tags: {

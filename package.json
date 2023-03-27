@@ -5,10 +5,18 @@
   "repository": "git@github.com:georgemblack/web-api.git",
   "author": "georgemblack <contact@george.black>",
   "license": "MIT",
+  "targets": {
+    "default": {
+      "context": "node",
+      "engines": {
+        "node": ">= 18"
+      },
+      "outputFormat": "esmodule"
+    }
+  },
   "scripts": {
-    "start": "node ./dist/app.js",
-    "build": "babel ./src -d ./dist",
-    "dev": "babel ./src -d ./dist && node ./dist/app.js",
+    "start": "node dist/app.js",
+    "build": "parcel build src/app.ts  --target default",
     "format": "prettier ./src --write",
     "lint": "eslint ./src --fix",
     "tsc": "tsc --noEmit"
@@ -29,10 +37,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.9",
-    "@babel/core": "^7.18.9",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.0",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -40,6 +44,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.1",
+    "parcel": "^2.8.3",
     "prettier": "^2.4.1",
     "typescript": "^5.0.2"
   }

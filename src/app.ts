@@ -2,13 +2,13 @@ import express from "express";
 import pino from "pino-http";
 import config from "config";
 
-import format from "./format.js";
-import auth from "./middlewares/auth.js";
-import rateLimit from "./middlewares/rateLimit.js";
-import validate from "./middlewares/validate.js";
-import generate from "./services/content-generator/index.js";
-import firestore from "./services/firestore.js";
-import build from "./services/build.js";
+import format from "./format";
+import auth from "./middlewares/auth";
+import rateLimit from "./middlewares/rateLimit";
+import validate from "./middlewares/validate";
+import generate from "./services/content-generator/index";
+import firestore from "./services/firestore";
+import build from "./services/build";
 
 const ALLOWED_ORIGIN = config.get("allowedOrigin");
 const LIKE_COLLECTION = config.get("likeCollectionName");
