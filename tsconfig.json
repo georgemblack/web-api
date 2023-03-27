@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "strict": true,
-    "strictNullChecks": false,
     "jsx": "react-jsx",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
   },
 }
