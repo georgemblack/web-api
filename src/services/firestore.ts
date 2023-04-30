@@ -2,12 +2,15 @@ import Firestore from "@google-cloud/firestore";
 import config from "config";
 import { v4 as uuidv4 } from "uuid";
 
-const LIKE_COLLECTION_NAME = config.get("likeCollectionName");
-const POST_COLLECTION_NAME = config.get("postCollectionName");
+const LIKE_COLLECTION_NAME: string = config.get("likeCollectionName");
+const POST_COLLECTION_NAME: string = config.get("postCollectionName");
 
-const COLLECTIONS_FOR_BACKUP = [LIKE_COLLECTION_NAME, POST_COLLECTION_NAME];
-const BACKUP_BUCKET_NAME = config.get("backupBucketName");
-const GCLOUD_PROJECT_ID = config.get("gcloudProjectID");
+const COLLECTIONS_FOR_BACKUP: string[] = [
+  LIKE_COLLECTION_NAME,
+  POST_COLLECTION_NAME,
+];
+const BACKUP_BUCKET_NAME: string = config.get("backupBucketName");
+const GCLOUD_PROJECT_ID: string = config.get("gcloudProjectID");
 
 const firestoreService = new Firestore();
 const admin = new Firestore.v1.FirestoreAdminClient();
@@ -49,10 +52,15 @@ async function getPosts() {
 
   const posts = snapshot.docs.map((doc) => {
     const payload = doc.data();
-    return {
+    const result = {
       id: doc.id,
       ...payload,
     };
+
+    // append fields that may not exist, and add defaults
+    if (result.listed === undefined) {
+      result.listed = true;
+    }
   });
 
   return {
@@ -74,9 +82,17 @@ async function getPublishedPosts() {
     };
   });
 
-  // filter
+  // filter out draft posts
   posts = posts.filter((post) => {
     return !post.draft;
+  });
+
+  // append fields that may not exist, and add defaults
+  posts = posts.map((post) => {
+    if (post.listed === undefined) {
+      post.listed = true;
+    }
+    return post;
   });
 
   return {
@@ -87,14 +103,26 @@ async function getPublishedPosts() {
 async function getPost(id) {
   const doc = await firestoreService.doc(`${POST_COLLECTION_NAME}/${id}`).get();
   const payload = doc.data();
-  return {
+
+  const result = {
     id: doc.id,
     ...payload,
   };
+
+  // append fields that may not exist, and provide defaults
+  if (result.listed === undefined) {
+    result.listed = true;
+  }
 }
 
 async function putPost(id, payload) {
   const doc = firestoreService.doc(`${POST_COLLECTION_NAME}/${id}`);
+
+  // append fields that may not exist, and add defaults
+  if (payload.listed === undefined) {
+    payload.listed = true;
+  }
+
   await doc.set(payload);
 }
 

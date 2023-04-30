@@ -10,9 +10,9 @@ import generate from "./services/content-generator/index";
 import firestore from "./services/firestore";
 import build from "./services/build";
 
-const ALLOWED_ORIGIN = config.get("allowedOrigin");
-const LIKE_COLLECTION = config.get("likeCollectionName");
-const POST_COLLECTION = config.get("postCollectionName");
+const ALLOWED_ORIGIN: string = config.get("allowedOrigin");
+const LIKE_COLLECTION: string = config.get("likeCollectionName");
+const POST_COLLECTION: string = config.get("postCollectionName");
 
 // Express setup
 const app = express();
