@@ -61,6 +61,8 @@ async function getPosts() {
     if (result.listed === undefined) {
       result.listed = true;
     }
+
+    return result;
   });
 
   return {
@@ -113,6 +115,8 @@ async function getPost(id) {
   if (result.listed === undefined) {
     result.listed = true;
   }
+
+  return result;
 }
 
 async function putPost(id, payload) {
