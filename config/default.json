@@ -4,5 +4,6 @@
   "allowedOrigin": "*",
   "postCollectionName": "web-posts-staging",
   "likeCollectionName": "web-likes-staging",
+  "metadataCollectionName": "web-metadata-staging",
   "backupBucketName": "gs://web-backups.george.black"
 }

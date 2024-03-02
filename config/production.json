@@ -4,5 +4,6 @@
   "allowedOrigin": "https://web.george.black",
   "postCollectionName": "web-posts",
   "likeCollectionName": "web-likes",
+  "metadataCollectionName": "web-metadata",
   "backupBucketName": "gs://web-backups.george.black"
 }

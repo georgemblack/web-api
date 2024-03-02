@@ -233,4 +233,34 @@ app.post(
   }
 );
 
+app.get(
+  "/hashes",
+  rateLimit.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(200).send(await firestore.getHashes());
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
+app.post(
+  "/hashes",
+  rateLimit.rateLimit,
+  auth.validateToken,
+  async (req, res) => {
+    res.header("Content-Type", "application/json");
+    try {
+      return res.status(201).send(await firestore.postHashes(req.body));
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal error");
+    }
+  }
+);
+
 app.listen(port, () => console.log(`Listening on port ${port}`));

@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const LIKE_COLLECTION_NAME: string = config.get("likeCollectionName");
 const POST_COLLECTION_NAME: string = config.get("postCollectionName");
+const METADATA_COLLECTION: string = config.get("metadataCollectionName");
 
 const COLLECTIONS_FOR_BACKUP: string[] = [
   LIKE_COLLECTION_NAME,
@@ -148,6 +149,16 @@ async function createBackup() {
   }
 }
 
+async function getHashes() {
+  const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`);
+  return await doc.data();
+}
+
+async function postHashes(payload) {
+  const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`);
+  await doc.set(payload);
+}
+
 export default {
   postItem,
   deleteItem,
@@ -157,4 +168,6 @@ export default {
   getPost,
   putPost,
   createBackup,
+  getHashes,
+  postHashes,
 };
