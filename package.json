@@ -22,7 +22,7 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^4.15.1",
+    "@google-cloud/firestore": "^6.2.0",
     "@markdoc/markdoc": "^0.1.4",
     "config": "^3.3.6",
     "express": "^4.17.3",
