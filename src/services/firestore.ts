@@ -151,12 +151,13 @@ async function createBackup() {
 
 async function getHashes() {
   const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`).get();
-  return await doc.data();
+  const data = await doc.data();
+  return JSON.parse(data.data);
 }
 
 async function postHashes(payload) {
   const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`);
-  await doc.set(payload);
+  await doc.set({ data: JSON.stringify(payload) });
 }
 
 export default {
