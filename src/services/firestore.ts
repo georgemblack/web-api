@@ -150,7 +150,7 @@ async function createBackup() {
 }
 
 async function getHashes() {
-  const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`);
+  const doc = firestoreService.doc(`${METADATA_COLLECTION}/hashes`).get();
   return await doc.data();
 }
 
