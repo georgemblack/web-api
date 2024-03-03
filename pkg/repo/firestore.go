@@ -28,18 +28,121 @@ func NewFirestoreService(config conf.Config) (FirestoreService, error) {
 	}, nil
 }
 
-type HashList struct {
-	Hashes map[string]string `json:"hashes"`
+func (f *FirestoreService) GetLike(id string) (types.Like, error) {
+	ctx := context.Background()
+	req := firestorepb.GetDocumentRequest{
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+	}
+	doc, err := f.client.GetDocument(ctx, &req)
+	if err != nil {
+		return types.Like{}, types.WrapErr(err, "failed to get like")
+	}
+
+	return types.Like{
+		ID:        id,
+		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
+		Title:     doc.Fields["title"].GetStringValue(),
+		URL:       doc.Fields["url"].GetStringValue(),
+	}, nil
 }
 
-func (f *FirestoreService) GetHashList() (HashList, error) {
+func (f *FirestoreService) GetLikes() ([]types.Like, error) {
+	ctx := context.Background()
+	req := firestorepb.ListDocumentsRequest{
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		CollectionId: "web-likes",
+	}
+	iter := f.client.ListDocuments(ctx, &req)
+
+	likes := make([]types.Like, 0)
+	for {
+		doc, err := iter.Next()
+		if err != nil {
+			break
+		}
+		likes = append(likes, toLike(doc))
+	}
+
+	return likes, nil
+}
+
+func toLike(doc *firestorepb.Document) types.Like {
+	return types.Like{
+		ID:        doc.Name,
+		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
+		Title:     doc.Fields["title"].GetStringValue(),
+		URL:       doc.Fields["url"].GetStringValue(),
+	}
+}
+
+func (f *FirestoreService) GetPost(id string) (types.Post, error) {
+	ctx := context.Background()
+	req := firestorepb.GetDocumentRequest{
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+	}
+	doc, err := f.client.GetDocument(ctx, &req)
+	if err != nil {
+		return types.Post{}, types.WrapErr(err, "failed to get post")
+	}
+
+	// Convert tags from firestore array to string array
+	tags := doc.Fields["tags"].GetArrayValue().Values
+	tagsStr := make([]string, len(tags))
+	for i, v := range tags {
+		tagsStr[i] = v.GetStringValue()
+	}
+
+	return toPost(doc), nil
+}
+
+func (f *FirestoreService) GetPosts() ([]types.Post, error) {
+	ctx := context.Background()
+	req := firestorepb.ListDocumentsRequest{
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		CollectionId: "web-posts",
+	}
+	iter := f.client.ListDocuments(ctx, &req)
+
+	posts := make([]types.Post, 0)
+	for {
+		doc, err := iter.Next()
+		if err != nil {
+			break
+		}
+		posts = append(posts, toPost(doc))
+	}
+
+	return posts, nil
+}
+
+func toPost(doc *firestorepb.Document) types.Post {
+	// Convert tags from firestore array to string array
+	tags := doc.Fields["tags"].GetArrayValue().Values
+	tagsStr := make([]string, len(tags))
+	for i, v := range tags {
+		tagsStr[i] = v.GetStringValue()
+	}
+
+	return types.Post{
+		ID:        doc.Name,
+		Draft:     doc.Fields["draft"].GetBooleanValue(),
+		Listed:    doc.Fields["listed"].GetBooleanValue(),
+		Title:     doc.Fields["title"].GetStringValue(),
+		Slug:      doc.Fields["slug"].GetStringValue(),
+		Content:   doc.Fields["content"].GetStringValue(),
+		Tags:      tagsStr,
+		Published: doc.Fields["published"].GetTimestampValue().AsTime(),
+	}
+}
+
+func (f *FirestoreService) GetHashList() (types.HashList, error) {
 	ctx := context.Background()
 	req := firestorepb.GetDocumentRequest{
 		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
 	}
 	doc, err := f.client.GetDocument(ctx, &req)
 	if err != nil {
-		return HashList{}, types.WrapErr(err, "failed to get hash list")
+		return types.HashList{}, types.WrapErr(err, "failed to get hash list")
 	}
 
 	// Convert from firestore doc to hash list
@@ -48,7 +151,7 @@ func (f *FirestoreService) GetHashList() (HashList, error) {
 		hashes[k] = v.GetStringValue()
 	}
 
-	return HashList{
+	return types.HashList{
 		Hashes: hashes,
 	}, nil
 }
