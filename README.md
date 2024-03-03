@@ -2,10 +2,15 @@
 
 The Web API serves two primary functions:
 
-* Read/write data to Google Cloud Firestore
-* Trigger builds (using Web Build service)
+- Read/write data to Google Cloud Firestore
+- Trigger builds (using Web Build service)
 
-Environment-based can be found in the `config` dir.
+To start in Codespaces (until I figure out how to do this automatically):
+
+```
+export GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+echo "$GOOGLE_APPLICATION_CREDENTIALS_CONTENTS" > google-application-credentials.json
+```
 
 ## Development
 
@@ -24,5 +29,5 @@ PASSWORD          # for auth
 
 The Web API runs as a service on Google Cloud Run, and must be given an IAM role that can:
 
-* Read/write to Firestore
-* Invoke Web Build service
+- Read/write to Firestore
+- Invoke Web Build service

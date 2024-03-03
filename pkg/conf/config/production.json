@@ -1,9 +1,7 @@
 {
   "gcloudProjectID": "oceanblue-web",
   "buildServiceEndpoint": "https://web-builder-mctt25bpba-ue.a.run.app",
-  "allowedOrigin": "https://web.george.black",
-  "postCollectionName": "web-posts",
-  "likeCollectionName": "web-likes",
-  "metadataCollectionName": "web-metadata",
+  "allowedOriginHeader": "https://web.george.black",
+  "firestoreDatabaseName": "(default)",
   "backupBucketName": "gs://web-backups.george.black"
 }

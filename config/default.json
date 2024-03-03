@@ -1,9 +1,0 @@
-{
-  "gcloudProjectID": "oceanblue-web",
-  "buildServiceEndpoint": "http://localhost:9000",
-  "allowedOrigin": "*",
-  "postCollectionName": "web-posts-staging",
-  "likeCollectionName": "web-likes-staging",
-  "metadataCollectionName": "web-metadata-staging",
-  "backupBucketName": "gs://web-backups.george.black"
-}
