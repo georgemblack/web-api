@@ -8,6 +8,8 @@ import (
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/types"
+	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type FirestoreService struct {
@@ -66,6 +68,29 @@ func (f *FirestoreService) GetLikes() ([]types.Like, error) {
 	return likes, nil
 }
 
+func (f *FirestoreService) AddLike(like types.Like) (string, error) {
+	ctx := context.Background()
+	id := uuid.New().String()
+	req := firestorepb.CreateDocumentRequest{
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		CollectionId: "web-likes",
+		DocumentId:   id,
+		Document: &firestorepb.Document{
+			Fields: map[string]*firestorepb.Value{
+				"timestamp": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(like.Timestamp)}},
+				"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: like.Title}},
+				"url":       {ValueType: &firestorepb.Value_StringValue{StringValue: like.URL}},
+			},
+		},
+	}
+	_, err := f.client.CreateDocument(ctx, &req)
+	if err != nil {
+		return "", types.WrapErr(err, "failed to create like")
+	}
+
+	return id, nil
+}
+
 func toLike(doc *firestorepb.Document) types.Like {
 	return types.Like{
 		ID:        doc.Name,
@@ -113,6 +138,36 @@ func (f *FirestoreService) GetPosts() ([]types.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func (f *FirestoreService) AddPost(post types.Post) (string, error) {
+	ctx := context.Background()
+	id := uuid.New().String()
+	req := firestorepb.CreateDocumentRequest{
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		CollectionId: "web-posts",
+		DocumentId:   id,
+		Document: &firestorepb.Document{
+			Fields: map[string]*firestorepb.Value{
+				"draft":     {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Draft}},
+				"listed":    {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Listed}},
+				"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
+				"slug":      {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
+				"content":   {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
+				"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: make([]*firestorepb.Value, len(post.Tags))}}},
+				"published": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
+			},
+		},
+	}
+	for i, v := range post.Tags {
+		req.Document.Fields["tags"].GetArrayValue().Values[i] = &firestorepb.Value{ValueType: &firestorepb.Value_StringValue{StringValue: v}}
+	}
+	_, err := f.client.CreateDocument(ctx, &req)
+	if err != nil {
+		return "", types.WrapErr(err, "failed to create post")
+	}
+
+	return id, nil
 }
 
 func toPost(doc *firestorepb.Document) types.Post {
