@@ -47,6 +47,12 @@ func TestAddGetLike(t *testing.T) {
 		t.Errorf("failed to get like; %s", err)
 	}
 
+	// Delete like
+	err = service.DeleteLike(id)
+	if err != nil {
+		t.Errorf("failed to delete like; %s", err)
+	}
+
 	// Compare
 	if expected.Timestamp.Unix() != actual.Timestamp.Unix() {
 		t.Errorf("expected timestamp %s, got %s", expected.Timestamp, actual.Timestamp)
@@ -85,6 +91,12 @@ func TestAddGetPost(t *testing.T) {
 	actual, err := service.GetPost(id)
 	if err != nil {
 		t.Errorf("failed to get post; %s", err)
+	}
+
+	// Delete post
+	err = service.DeletePost(id)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
 	}
 
 	// Compare

@@ -91,13 +91,17 @@ func (f *FirestoreService) AddLike(like types.Like) (string, error) {
 	return id, nil
 }
 
-func toLike(doc *firestorepb.Document) types.Like {
-	return types.Like{
-		ID:        doc.Name,
-		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
-		Title:     doc.Fields["title"].GetStringValue(),
-		URL:       doc.Fields["url"].GetStringValue(),
+func (f *FirestoreService) DeleteLike(id string) error {
+	ctx := context.Background()
+	req := firestorepb.DeleteDocumentRequest{
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
 	}
+	err := f.client.DeleteDocument(ctx, &req)
+	if err != nil {
+		return types.WrapErr(err, "failed to delete like")
+	}
+
+	return nil
 }
 
 func (f *FirestoreService) GetPost(id string) (types.Post, error) {
@@ -170,24 +174,17 @@ func (f *FirestoreService) AddPost(post types.Post) (string, error) {
 	return id, nil
 }
 
-func toPost(doc *firestorepb.Document) types.Post {
-	// Convert tags from firestore array to string array
-	tags := doc.Fields["tags"].GetArrayValue().Values
-	tagsStr := make([]string, len(tags))
-	for i, v := range tags {
-		tagsStr[i] = v.GetStringValue()
+func (f *FirestoreService) DeletePost(id string) error {
+	ctx := context.Background()
+	req := firestorepb.DeleteDocumentRequest{
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+	}
+	err := f.client.DeleteDocument(ctx, &req)
+	if err != nil {
+		return types.WrapErr(err, "failed to delete like")
 	}
 
-	return types.Post{
-		ID:        doc.Name,
-		Draft:     doc.Fields["draft"].GetBooleanValue(),
-		Listed:    doc.Fields["listed"].GetBooleanValue(),
-		Title:     doc.Fields["title"].GetStringValue(),
-		Slug:      doc.Fields["slug"].GetStringValue(),
-		Content:   doc.Fields["content"].GetStringValue(),
-		Tags:      tagsStr,
-		Published: doc.Fields["published"].GetTimestampValue().AsTime(),
-	}
+	return nil
 }
 
 func (f *FirestoreService) GetHashList() (types.HashList, error) {
