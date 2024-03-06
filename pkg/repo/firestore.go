@@ -9,7 +9,6 @@ import (
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/types"
 	"github.com/google/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type FirestoreService struct {
@@ -40,12 +39,7 @@ func (f *FirestoreService) GetLike(id string) (types.Like, error) {
 		return types.Like{}, types.WrapErr(err, "failed to get like")
 	}
 
-	return types.Like{
-		ID:        id,
-		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
-		Title:     doc.Fields["title"].GetStringValue(),
-		URL:       doc.Fields["url"].GetStringValue(),
-	}, nil
+	return docToLike(doc), nil
 }
 
 func (f *FirestoreService) GetLikes() ([]types.Like, error) {
@@ -63,7 +57,7 @@ func (f *FirestoreService) GetLikes() ([]types.Like, error) {
 		if err != nil {
 			break
 		}
-		likes = append(likes, toLike(doc))
+		likes = append(likes, docToLike(doc))
 	}
 
 	return likes, nil
@@ -76,13 +70,7 @@ func (f *FirestoreService) AddLike(like types.Like) (string, error) {
 		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
 		CollectionId: "web-likes",
 		DocumentId:   id,
-		Document: &firestorepb.Document{
-			Fields: map[string]*firestorepb.Value{
-				"timestamp": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(like.Timestamp)}},
-				"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: like.Title}},
-				"url":       {ValueType: &firestorepb.Value_StringValue{StringValue: like.URL}},
-			},
-		},
+		Document:     likeToDoc(like),
 	}
 	_, err := f.client.CreateDocument(ctx, &req)
 	if err != nil {
@@ -122,7 +110,7 @@ func (f *FirestoreService) GetPost(id string) (types.Post, error) {
 		tagsStr[i] = v.GetStringValue()
 	}
 
-	return toPost(doc), nil
+	return docToPost(doc), nil
 }
 
 type PostFilters struct {
@@ -145,7 +133,7 @@ func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
 		if err != nil {
 			break
 		}
-		post := toPost(doc)
+		post := docToPost(doc)
 
 		// Apply filters
 		if filters.Listed != nil && post.Listed != *filters.Listed {
@@ -154,7 +142,7 @@ func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
 		if filters.Draft != nil && post.Draft != *filters.Draft {
 			continue
 		}
-		posts = append(posts, toPost(doc))
+		posts = append(posts, docToPost(doc))
 	}
 
 	return posts, nil
@@ -167,17 +155,7 @@ func (f *FirestoreService) AddPost(post types.Post) (string, error) {
 		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
 		CollectionId: "web-posts",
 		DocumentId:   id,
-		Document: &firestorepb.Document{
-			Fields: map[string]*firestorepb.Value{
-				"draft":     {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Draft}},
-				"listed":    {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Listed}},
-				"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
-				"slug":      {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
-				"content":   {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
-				"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: make([]*firestorepb.Value, len(post.Tags))}}},
-				"published": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
-			},
-		},
+		Document:     postToDoc(post),
 	}
 	for i, v := range post.Tags {
 		req.Document.Fields["tags"].GetArrayValue().Values[i] = &firestorepb.Value{ValueType: &firestorepb.Value_StringValue{StringValue: v}}
@@ -188,6 +166,22 @@ func (f *FirestoreService) AddPost(post types.Post) (string, error) {
 	}
 
 	return id, nil
+}
+
+func (f *FirestoreService) UpdatePost(post types.Post) error {
+	ctx := context.Background()
+	req := firestorepb.UpdateDocumentRequest{
+		Document: &firestorepb.Document{
+			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, post.ID),
+			Fields: postToDoc(post).Fields,
+		},
+	}
+	_, err := f.client.UpdateDocument(ctx, &req)
+	if err != nil {
+		return types.WrapErr(err, "failed to update post")
+	}
+
+	return nil
 }
 
 func (f *FirestoreService) DeletePost(id string) error {

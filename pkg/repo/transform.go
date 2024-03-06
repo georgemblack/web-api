@@ -5,9 +5,10 @@ import (
 
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
 	"github.com/georgemblack/web-api/pkg/types"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func toLike(doc *firestorepb.Document) types.Like {
+func docToLike(doc *firestorepb.Document) types.Like {
 	return types.Like{
 		ID:        id(doc),
 		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
@@ -16,7 +17,17 @@ func toLike(doc *firestorepb.Document) types.Like {
 	}
 }
 
-func toPost(doc *firestorepb.Document) types.Post {
+func likeToDoc(like types.Like) *firestorepb.Document {
+	return &firestorepb.Document{
+		Fields: map[string]*firestorepb.Value{
+			"timestamp": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(like.Timestamp)}},
+			"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: like.Title}},
+			"url":       {ValueType: &firestorepb.Value_StringValue{StringValue: like.URL}},
+		},
+	}
+}
+
+func docToPost(doc *firestorepb.Document) types.Post {
 	// Convert tags from firestore array to string array
 	tags := doc.Fields["tags"].GetArrayValue().Values
 	tagsStr := make([]string, len(tags))
@@ -33,6 +44,26 @@ func toPost(doc *firestorepb.Document) types.Post {
 		Content:   doc.Fields["content"].GetStringValue(),
 		Tags:      tagsStr,
 		Published: doc.Fields["published"].GetTimestampValue().AsTime(),
+	}
+}
+
+func postToDoc(post types.Post) *firestorepb.Document {
+	// Convert tags from string array to firestore array
+	tags := make([]*firestorepb.Value, len(post.Tags))
+	for i, v := range post.Tags {
+		tags[i] = &firestorepb.Value{ValueType: &firestorepb.Value_StringValue{StringValue: v}}
+	}
+
+	return &firestorepb.Document{
+		Fields: map[string]*firestorepb.Value{
+			"draft":     {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Draft}},
+			"listed":    {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Listed}},
+			"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
+			"slug":      {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
+			"content":   {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
+			"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: make([]*firestorepb.Value, len(post.Tags))}}},
+			"published": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
+		},
 	}
 }
 
