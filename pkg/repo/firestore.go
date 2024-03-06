@@ -54,6 +54,7 @@ func (f *FirestoreService) GetLikes() ([]types.Like, error) {
 	req := firestorepb.ListDocumentsRequest{
 		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
 		CollectionId: "web-likes",
+		OrderBy:      "timestamp desc",
 	}
 	iter := f.client.ListDocuments(ctx, &req)
 
