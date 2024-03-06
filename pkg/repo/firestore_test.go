@@ -223,30 +223,55 @@ func TestGetPostsWithFilters(t *testing.T) {
 		Tags:      []string{"test", "tag"},
 		Published: time.Now(),
 	}
-	id, err := service.AddPost(unlisted)
+	unlistedID, err := service.AddPost(unlisted)
+	if err != nil {
+		t.Errorf("failed to add post; %s", err)
+	}
+
+	// Add draft post
+	draft := types.Post{
+		ID:        "",
+		Draft:     true,
+		Listed:    true,
+		Title:     "test title",
+		Slug:      "test-title",
+		Content:   "#test content",
+		Tags:      []string{"test", "tag"},
+		Published: time.Now(),
+	}
+	draftID, err := service.AddPost(draft)
 	if err != nil {
 		t.Errorf("failed to add post; %s", err)
 	}
 
 	// Read posts
-	listed := true
+	listedBool := true
+	draftBool := false
 	posts, err := service.GetPosts(PostFilters{
-		Listed: &listed,
+		Listed: &listedBool,
+		Draft:  &draftBool,
 	})
 	if err != nil {
 		t.Errorf("failed to get posts; %s", err)
 	}
 
-	// Delete post
-	err = service.DeletePost(id)
+	// Delete posts
+	err = service.DeletePost(unlistedID)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
+	}
+	err = service.DeletePost(draftID)
 	if err != nil {
 		t.Errorf("failed to delete post; %s", err)
 	}
 
-	// Validate posts does not contain unlisted post
+	// Validate posts does not contain unlisted or draft post
 	for _, post := range posts {
-		if post.ID == id {
-			t.Errorf("expected not to find post %s", id)
+		if post.ID == unlistedID {
+			t.Errorf("expected not to find post %s", unlistedID)
+		}
+		if post.ID == draftID {
+			t.Errorf("expected not to find post %s", draftID)
 		}
 	}
 }

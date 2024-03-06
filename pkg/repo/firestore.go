@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	firestore "cloud.google.com/go/firestore/apiv1"
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
@@ -128,6 +127,7 @@ func (f *FirestoreService) GetPost(id string) (types.Post, error) {
 
 type PostFilters struct {
 	Listed *bool
+	Draft  *bool
 }
 
 func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
@@ -143,13 +143,15 @@ func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
 	for {
 		doc, err := iter.Next()
 		if err != nil {
-			slog.Warn(types.WrapErr(err, "failed to get post").Error())
 			break
 		}
 		post := toPost(doc)
 
 		// Apply filters
 		if filters.Listed != nil && post.Listed != *filters.Listed {
+			continue
+		}
+		if filters.Draft != nil && post.Draft != *filters.Draft {
 			continue
 		}
 		posts = append(posts, toPost(doc))
