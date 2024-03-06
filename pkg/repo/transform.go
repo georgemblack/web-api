@@ -1,13 +1,15 @@
 package repo
 
 import (
+	"strings"
+
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
 	"github.com/georgemblack/web-api/pkg/types"
 )
 
 func toLike(doc *firestorepb.Document) types.Like {
 	return types.Like{
-		ID:        doc.Name,
+		ID:        id(doc),
 		Timestamp: doc.Fields["timestamp"].GetTimestampValue().AsTime(),
 		Title:     doc.Fields["title"].GetStringValue(),
 		URL:       doc.Fields["url"].GetStringValue(),
@@ -23,7 +25,7 @@ func toPost(doc *firestorepb.Document) types.Post {
 	}
 
 	return types.Post{
-		ID:        doc.Name,
+		ID:        id(doc),
 		Draft:     doc.Fields["draft"].GetBooleanValue(),
 		Listed:    doc.Fields["listed"].GetBooleanValue(),
 		Title:     doc.Fields["title"].GetStringValue(),
@@ -32,4 +34,9 @@ func toPost(doc *firestorepb.Document) types.Post {
 		Tags:      tagsStr,
 		Published: doc.Fields["published"].GetTimestampValue().AsTime(),
 	}
+}
+
+func id(doc *firestorepb.Document) string {
+	split := strings.Split(doc.Name, "/")
+	return split[len(split)-1]
 }

@@ -29,7 +29,7 @@ func TestAddGetLike(t *testing.T) {
 		t.Errorf("failed to prep test; %s", err)
 	}
 
-	// Create like
+	// Add like
 	expected := types.Like{
 		ID:        "",
 		Timestamp: time.Now(),
@@ -71,7 +71,7 @@ func TestAddGetPost(t *testing.T) {
 		t.Errorf("failed to prep test; %s", err)
 	}
 
-	// Create post
+	// Add post
 	expected := types.Post{
 		ID:        "",
 		Draft:     false,
@@ -122,5 +122,131 @@ func TestAddGetPost(t *testing.T) {
 	}
 	if actual.Published.Unix() != expected.Published.Unix() {
 		t.Errorf("expected published %s, got %s", expected.Published, actual.Published)
+	}
+}
+
+func TestGetPosts(t *testing.T) {
+	service, err := prep(t)
+	if err != nil {
+		t.Errorf("failed to prep test; %s", err)
+	}
+
+	// Add posts
+	expected := types.Post{
+		ID:        "",
+		Draft:     false,
+		Listed:    true,
+		Title:     "test title",
+		Slug:      "test-title",
+		Content:   "#test content",
+		Tags:      []string{"test", "tag"},
+		Published: time.Now(),
+	}
+	first, err := service.AddPost(expected)
+	if err != nil {
+		t.Errorf("failed to add post; %s", err)
+	}
+
+	second, err := service.AddPost(expected)
+	if err != nil {
+		t.Errorf("failed to add post; %s", err)
+	}
+
+	// Read posts
+	posts, err := service.GetPosts(PostFilters{})
+	if err != nil {
+		t.Errorf("failed to get posts; %s", err)
+	}
+
+	// Delete posts
+	err = service.DeletePost(first)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
+	}
+	err = service.DeletePost(second)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
+	}
+
+	// Validate posts contains at least two posts
+	if len(posts) < 2 {
+		t.Errorf("expected at least two posts, got %d", len(posts))
+	}
+
+	// Validate posts contains first
+	found := false
+	for _, post := range posts {
+		if post.ID == first {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected to find post %s", first)
+	}
+
+	// Validate posts contains second
+	found = false
+	for _, post := range posts {
+		if post.ID == second {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected to find post %s", second)
+	}
+
+	// Validate that second appears before first
+	for _, post := range posts {
+		if post.ID == second {
+			break
+		}
+		if post.ID == first {
+			t.Errorf("expected second post to appear before first")
+		}
+	}
+}
+
+func TestGetPostsWithFilters(t *testing.T) {
+	service, err := prep(t)
+	if err != nil {
+		t.Errorf("failed to prep test; %s", err)
+	}
+
+	// Add unlisted post
+	unlisted := types.Post{
+		ID:        "",
+		Draft:     false,
+		Listed:    false,
+		Title:     "test title",
+		Slug:      "test-title",
+		Content:   "#test content",
+		Tags:      []string{"test", "tag"},
+		Published: time.Now(),
+	}
+	id, err := service.AddPost(unlisted)
+	if err != nil {
+		t.Errorf("failed to add post; %s", err)
+	}
+
+	// Read posts
+	listed := true
+	posts, err := service.GetPosts(PostFilters{
+		Listed: &listed,
+	})
+	if err != nil {
+		t.Errorf("failed to get posts; %s", err)
+	}
+
+	// Delete post
+	err = service.DeletePost(id)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
+	}
+
+	// Validate posts does not contain unlisted post
+	for _, post := range posts {
+		if post.ID == id {
+			t.Errorf("expected not to find post %s", id)
+		}
 	}
 }

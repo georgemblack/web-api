@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	firestore "cloud.google.com/go/firestore/apiv1"
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
@@ -124,11 +125,16 @@ func (f *FirestoreService) GetPost(id string) (types.Post, error) {
 	return toPost(doc), nil
 }
 
-func (f *FirestoreService) GetPosts() ([]types.Post, error) {
+type PostFilters struct {
+	Listed *bool
+}
+
+func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
 	ctx := context.Background()
 	req := firestorepb.ListDocumentsRequest{
 		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
 		CollectionId: "web-posts",
+		OrderBy:      "published desc",
 	}
 	iter := f.client.ListDocuments(ctx, &req)
 
@@ -136,7 +142,14 @@ func (f *FirestoreService) GetPosts() ([]types.Post, error) {
 	for {
 		doc, err := iter.Next()
 		if err != nil {
+			slog.Warn(types.WrapErr(err, "failed to get post").Error())
 			break
+		}
+		post := toPost(doc)
+
+		// Apply filters
+		if filters.Listed != nil && post.Listed != *filters.Listed {
+			continue
 		}
 		posts = append(posts, toPost(doc))
 	}
