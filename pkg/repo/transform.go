@@ -61,7 +61,7 @@ func postToDoc(post types.Post) *firestorepb.Document {
 			"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
 			"slug":      {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
 			"content":   {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
-			"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: make([]*firestorepb.Value, len(post.Tags))}}},
+			"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: tags}}},
 			"published": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
 		},
 	}

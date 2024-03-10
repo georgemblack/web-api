@@ -185,6 +185,13 @@ func (f *FirestoreService) AddPost(post types.Post) (string, error) {
 
 func (f *FirestoreService) UpdatePost(post types.Post) error {
 	ctx := context.Background()
+
+	// Convert tags from string array to firestore array
+	tags := make([]*firestorepb.Value, len(post.Tags))
+	for i, v := range post.Tags {
+		tags[i] = &firestorepb.Value{ValueType: &firestorepb.Value_StringValue{StringValue: v}}
+	}
+
 	req := firestorepb.UpdateDocumentRequest{
 		Document: &firestorepb.Document{
 			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, post.ID),

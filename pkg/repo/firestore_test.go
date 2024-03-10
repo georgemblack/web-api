@@ -124,7 +124,7 @@ func TestAddGetPost(t *testing.T) {
 	if actual.Content != expected.Content {
 		t.Errorf("expected content %s, got %s", expected.Content, actual.Content)
 	}
-	for i, _ := range expected.Tags {
+	for i := range expected.Tags {
 		if actual.Tags[i] != expected.Tags[i] {
 			t.Errorf("expected tag %s, got %s", expected.Tags[i], actual.Tags[i])
 		}
@@ -319,5 +319,75 @@ func TestGetPostsWithFilters(t *testing.T) {
 	err = service.DeletePost(futureID)
 	if err != nil {
 		t.Errorf("failed to delete post; %s", err)
+	}
+}
+
+func TestUpdatePost(t *testing.T) {
+	service, err := prep(t)
+	if err != nil {
+		t.Errorf("failed to prep test; %s", err)
+	}
+
+	// Create post
+	post := types.Post{
+		ID:        "",
+		Draft:     false,
+		Listed:    true,
+		Title:     "test title",
+		Slug:      "test-title",
+		Content:   "#test content",
+		Tags:      []string{"test", "tag"},
+		Published: time.Now(),
+	}
+	postID, err := service.AddPost(post)
+	if err != nil {
+		t.Errorf("failed to add post; %s", err)
+	}
+
+	// Update post
+	post.ID = postID
+	post.Title = "updated title"
+	post.Slug = "updated-title"
+	post.Content = "#updated content"
+	post.Tags = []string{}
+
+	err = service.UpdatePost(post)
+	if err != nil {
+		t.Errorf("failed to update post; %s", err)
+	}
+
+	// Read post
+	actual, err := service.GetPost(postID)
+	if err != nil {
+		t.Errorf("failed to get post; %s", err)
+	}
+
+	// Delete post
+	err = service.DeletePost(postID)
+	if err != nil {
+		t.Errorf("failed to delete post; %s", err)
+	}
+
+	// Compare
+	if actual.Draft != post.Draft {
+		t.Errorf("expected draft %t, got %t", post.Draft, actual.Draft)
+	}
+	if actual.Listed != post.Listed {
+		t.Errorf("expected listed %t, got %t", post.Listed, actual.Listed)
+	}
+	if actual.Title != post.Title {
+		t.Errorf("expected title %s, got %s", post.Title, actual.Title)
+	}
+	if actual.Slug != post.Slug {
+		t.Errorf("expected slug %s, got %s", post.Slug, actual.Slug)
+	}
+	if actual.Content != post.Content {
+		t.Errorf("expected content %s, got %s", post.Content, actual.Content)
+	}
+	if len(actual.Tags) != 0 {
+		t.Errorf("expected no tags, got %v", actual.Tags)
+	}
+	if actual.Published.Unix() != post.Published.Unix() {
+		t.Errorf("expected published %s, got %s", post.Published, actual.Published)
 	}
 }
