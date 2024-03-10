@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"time"
 
 	firestore "cloud.google.com/go/firestore/apiv1"
 	"cloud.google.com/go/firestore/apiv1/firestorepb"
@@ -114,8 +115,8 @@ func (f *FirestoreService) GetPost(id string) (types.Post, error) {
 }
 
 type PostFilters struct {
-	Listed *bool
-	Draft  *bool
+	Listed    *bool
+	Published *bool
 }
 
 func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
@@ -135,12 +136,26 @@ func (f *FirestoreService) GetPosts(filters PostFilters) ([]types.Post, error) {
 		}
 		post := docToPost(doc)
 
-		// Apply filters
-		if filters.Listed != nil && post.Listed != *filters.Listed {
-			continue
+		// 'Listed' filter verifies the post is marked as listed
+		if filters.Listed != nil {
+			if *filters.Listed && !post.Listed {
+				continue
+			}
+			if !*filters.Listed && post.Listed {
+				continue
+			}
 		}
-		if filters.Draft != nil && post.Draft != *filters.Draft {
-			continue
+
+		// 'Published' filter checks:
+		//	1. Whether a post is a draft
+		//	2. Whether the post's publsihed date is in the future
+		if filters.Published != nil {
+			if *filters.Published && (post.Draft || post.Published.After(time.Now())) {
+				continue
+			}
+			if !*filters.Published && (!post.Draft && post.Published.Before(time.Now())) {
+				continue
+			}
 		}
 		posts = append(posts, docToPost(doc))
 	}
