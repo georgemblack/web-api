@@ -67,6 +67,28 @@ func postToDoc(post types.Post) *firestorepb.Document {
 	}
 }
 
+func docToHash(doc *firestorepb.Document) types.HashList {
+	hashes := make(map[string]string)
+	for k, v := range doc.Fields {
+		hashes[k] = v.GetStringValue()
+	}
+
+	return types.HashList{
+		Hashes: hashes,
+	}
+}
+
+func hashToDoc(hashList types.HashList) *firestorepb.Document {
+	fields := make(map[string]*firestorepb.Value)
+	for k, v := range hashList.Hashes {
+		fields[k] = &firestorepb.Value{ValueType: &firestorepb.Value_StringValue{StringValue: v}}
+	}
+
+	return &firestorepb.Document{
+		Fields: fields,
+	}
+}
+
 func id(doc *firestorepb.Document) string {
 	split := strings.Split(doc.Name, "/")
 	return split[len(split)-1]

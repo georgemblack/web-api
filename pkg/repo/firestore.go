@@ -229,15 +229,23 @@ func (f *FirestoreService) GetHashList() (types.HashList, error) {
 		return types.HashList{}, types.WrapErr(err, "failed to get hash list")
 	}
 
-	// Convert from firestore doc to hash list
-	hashes := make(map[string]string)
-	for k, v := range doc.Fields {
-		hashes[k] = v.GetStringValue()
+	return docToHash(doc), nil
+}
+
+func (f *FirestoreService) UpdateHashList(hashList types.HashList) error {
+	ctx := context.Background()
+	req := firestorepb.UpdateDocumentRequest{
+		Document: &firestorepb.Document{
+			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+			Fields: hashToDoc(hashList).Fields,
+		},
+	}
+	_, err := f.client.UpdateDocument(ctx, &req)
+	if err != nil {
+		return types.WrapErr(err, "failed to update hash list")
 	}
 
-	return types.HashList{
-		Hashes: hashes,
-	}, nil
+	return nil
 }
 
 func (f *FirestoreService) Close() {
