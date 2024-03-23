@@ -18,7 +18,9 @@ func Run() error {
 		return types.WrapErr(err, "failed to create firestore service")
 	}
 
+	// Configure gin & default middlewares
 	r := gin.Default()
+	r.Use(getHeaderMiddleware(config))
 
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
