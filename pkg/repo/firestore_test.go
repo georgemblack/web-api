@@ -84,14 +84,16 @@ func TestAddGetPost(t *testing.T) {
 
 	// Add post
 	expected := types.Post{
-		ID:        "",
-		Draft:     false,
-		Listed:    true,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now(),
+		ID:                 "",
+		Draft:              false,
+		Listed:             true,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now(),
 	}
 	id, err := service.AddPost(expected)
 	if err != nil {
@@ -144,14 +146,16 @@ func TestGetPosts(t *testing.T) {
 
 	// Add first post
 	expected := types.Post{
-		ID:        "",
-		Draft:     false,
-		Listed:    true,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now(),
+		ID:                 "",
+		Draft:              false,
+		Listed:             true,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now(),
 	}
 	first, err := service.AddPost(expected)
 	if err != nil {
@@ -223,14 +227,16 @@ func TestGetPostsWithFilters(t *testing.T) {
 
 	// Add 'unlisted' post
 	unlisted := types.Post{
-		ID:        "",
-		Draft:     false,
-		Listed:    false,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now().Add(-time.Hour),
+		ID:                 "",
+		Draft:              false,
+		Listed:             false,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now().Add(-time.Hour),
 	}
 	unlistedID, err := service.AddPost(unlisted)
 	if err != nil {
@@ -257,14 +263,16 @@ func TestGetPostsWithFilters(t *testing.T) {
 
 	// Add 'draft' post
 	draft := types.Post{
-		ID:        "",
-		Draft:     true,
-		Listed:    false,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now().Add(-time.Hour),
+		ID:                 "",
+		Draft:              true,
+		Listed:             false,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now().Add(-time.Hour),
 	}
 	draftID, err := service.AddPost(draft)
 	if err != nil {
@@ -291,14 +299,16 @@ func TestGetPostsWithFilters(t *testing.T) {
 
 	// Add 'future' post, with publish date in the future
 	future := types.Post{
-		ID:        "",
-		Draft:     false,
-		Listed:    true,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now().Add(time.Hour),
+		ID:                 "",
+		Draft:              false,
+		Listed:             true,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now().Add(time.Hour),
 	}
 	futureID, err := service.AddPost(future)
 	if err != nil {
@@ -332,14 +342,16 @@ func TestUpdatePost(t *testing.T) {
 
 	// Create post
 	post := types.Post{
-		ID:        "",
-		Draft:     false,
-		Listed:    true,
-		Title:     "test title",
-		Slug:      "test-title",
-		Content:   "#test content",
-		Tags:      []string{"test", "tag"},
-		Published: time.Now(),
+		ID:                 "",
+		Draft:              false,
+		Listed:             true,
+		Title:              "test title",
+		Slug:               "test-title",
+		Content:            "#test content",
+		ContentHTML:        "<h1>test content</h1>",
+		ContentHTMLPreview: "<h1>test content</h1>",
+		Tags:               []string{"test", "tag"},
+		Published:          time.Now(),
 	}
 	postID, err := service.AddPost(post)
 	if err != nil {
@@ -385,6 +397,12 @@ func TestUpdatePost(t *testing.T) {
 	}
 	if actual.Content != post.Content {
 		t.Errorf("expected content %s, got %s", post.Content, actual.Content)
+	}
+	if actual.ContentHTML != post.ContentHTML {
+		t.Errorf("expected content html %s, got %s", post.ContentHTML, actual.ContentHTML)
+	}
+	if actual.ContentHTMLPreview != post.ContentHTMLPreview {
+		t.Errorf("expected content html preview %s, got %s", post.ContentHTMLPreview, actual.ContentHTMLPreview)
 	}
 	if len(actual.Tags) != 0 {
 		t.Errorf("expected no tags, got %v", actual.Tags)

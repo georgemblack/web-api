@@ -36,14 +36,16 @@ func docToPost(doc *firestorepb.Document) types.Post {
 	}
 
 	return types.Post{
-		ID:        id(doc),
-		Draft:     doc.Fields["draft"].GetBooleanValue(),
-		Listed:    doc.Fields["listed"].GetBooleanValue(),
-		Title:     doc.Fields["title"].GetStringValue(),
-		Slug:      doc.Fields["slug"].GetStringValue(),
-		Content:   doc.Fields["content"].GetStringValue(),
-		Tags:      tagsStr,
-		Published: doc.Fields["published"].GetTimestampValue().AsTime(),
+		ID:                 id(doc),
+		Draft:              doc.Fields["draft"].GetBooleanValue(),
+		Listed:             doc.Fields["listed"].GetBooleanValue(),
+		Title:              doc.Fields["title"].GetStringValue(),
+		Slug:               doc.Fields["slug"].GetStringValue(),
+		Content:            doc.Fields["content"].GetStringValue(),
+		ContentHTML:        doc.Fields["contentHtml"].GetStringValue(),
+		ContentHTMLPreview: doc.Fields["contentHtmlPreview"].GetStringValue(),
+		Tags:               tagsStr,
+		Published:          doc.Fields["published"].GetTimestampValue().AsTime(),
 	}
 }
 
@@ -56,13 +58,15 @@ func postToDoc(post types.Post) *firestorepb.Document {
 
 	return &firestorepb.Document{
 		Fields: map[string]*firestorepb.Value{
-			"draft":     {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Draft}},
-			"listed":    {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Listed}},
-			"title":     {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
-			"slug":      {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
-			"content":   {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
-			"tags":      {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: tags}}},
-			"published": {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
+			"draft":              {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Draft}},
+			"listed":             {ValueType: &firestorepb.Value_BooleanValue{BooleanValue: post.Listed}},
+			"title":              {ValueType: &firestorepb.Value_StringValue{StringValue: post.Title}},
+			"slug":               {ValueType: &firestorepb.Value_StringValue{StringValue: post.Slug}},
+			"content":            {ValueType: &firestorepb.Value_StringValue{StringValue: post.Content}},
+			"contentHtml":        {ValueType: &firestorepb.Value_StringValue{StringValue: post.ContentHTML}},
+			"contentHtmlPreview": {ValueType: &firestorepb.Value_StringValue{StringValue: post.ContentHTMLPreview}},
+			"tags":               {ValueType: &firestorepb.Value_ArrayValue{ArrayValue: &firestorepb.ArrayValue{Values: tags}}},
+			"published":          {ValueType: &firestorepb.Value_TimestampValue{TimestampValue: timestamppb.New(post.Published)}},
 		},
 	}
 }

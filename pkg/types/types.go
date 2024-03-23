@@ -10,14 +10,16 @@ type HashList struct {
 }
 
 type Post struct {
-	ID        string
-	Draft     bool
-	Listed    bool
-	Title     string
-	Slug      string
-	Content   string
-	Tags      []string
-	Published time.Time
+	ID                 string
+	Draft              bool
+	Listed             bool
+	Title              string
+	Slug               string
+	Content            string
+	ContentHTML        string
+	ContentHTMLPreview string
+	Tags               []string
+	Published          time.Time
 }
 
 type Like struct {
