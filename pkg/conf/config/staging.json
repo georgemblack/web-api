@@ -1,0 +1,9 @@
+{
+  "gcloudProjectID": "oceanblue-web",
+  "buildServiceEndpoint": "http://localhost:9000",
+  "allowedOriginHeader": "*",
+  "firestoreDatabaseName": "staging",
+  "backupBucketName": "gs://web-backups.george.black",
+  "apiUsername": "test",
+  "apiPassword": "test"
+}
