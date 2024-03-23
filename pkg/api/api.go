@@ -4,6 +4,7 @@ import (
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/repo"
 	"github.com/georgemblack/web-api/pkg/types"
+	"github.com/gin-gonic/gin"
 )
 
 func Run() error {
@@ -17,5 +18,13 @@ func Run() error {
 		return types.WrapErr(err, "failed to create firestore service")
 	}
 
-	return nil
+	r := gin.Default()
+
+	r.GET("/hello", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "hello",
+		})
+	})
+
+	return r.Run()
 }
