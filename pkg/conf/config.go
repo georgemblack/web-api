@@ -15,6 +15,7 @@ type Config struct {
 	BackupBucketName      string `json:"backupBucketName"`
 	APIUsername           string `json:"apiUsername"`
 	APIPassword           string `json:"apiPassword"`
+	TokenSecret           string `json:"tokenSecret"`
 }
 
 //go:embed config/*
@@ -38,6 +39,9 @@ func LoadConfig() (Config, error) {
 	}
 	if config.APIPassword == "" {
 		config.APIPassword = os.Getenv("API_PASSWORD")
+	}
+	if config.TokenSecret == "" {
+		config.TokenSecret = os.Getenv("TOKEN_SECRET")
 	}
 
 	return config, nil
