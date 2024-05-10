@@ -2,6 +2,7 @@ package conf
 
 import (
 	"embed"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -21,6 +22,8 @@ type Config struct {
 //go:embed config/*
 var configFiles embed.FS
 
+// LoadConfig attemps to load configuration first from an embedded JSON file,
+// then via environment variables that can override.
 func LoadConfig() (Config, error) {
 	// Load config via static files
 	var config Config
@@ -45,6 +48,11 @@ func LoadConfig() (Config, error) {
 	}
 
 	return config, nil
+}
+
+// Base64UserPass returns the base64 encoded API username and password.
+func (c *Config) Base64UserPass() string {
+	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", c.APIUsername, c.APIPassword)))
 }
 
 func getEnv() string {

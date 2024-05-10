@@ -25,13 +25,16 @@ func Run() error {
 
 func setupRouter(config conf.Config) *gin.Engine {
 	r := gin.Default()
-	r.Use(getHeaderMiddleware(config))
+	r.Use(headerMiddleware(config))
 
-	// Basic auth
-	r.POST("/auth", getAuthHandler(config))
+	// Auth endpoint, required to fetch a JWT
+	r.POST("/auth", authHandler(config))
 
 	// Standard endpoints
-	r.GET("/hello", func(c *gin.Context) {
+	// All standard endpoints require a valid JWT
+	authorized := r.Group("/", validateJWTMiddleware(config))
+
+	authorized.GET("/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "hello",
 		})

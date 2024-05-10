@@ -8,17 +8,23 @@ import (
 	"testing"
 
 	"github.com/georgemblack/web-api/pkg/conf"
+	"github.com/georgemblack/web-api/pkg/testutil"
+	"github.com/gin-gonic/gin"
 )
 
 func TestHello(t *testing.T) {
+	gin.SetMode(gin.TestMode)
 	config, err := conf.LoadConfig()
 	if err != nil {
 		t.Errorf("failed to load config: %v", err)
 	}
 
 	router := setupRouter(config)
+
+	// Execute request
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/hello", nil)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", testutil.GetJWT(config, router)))
 	router.ServeHTTP(w, req)
 
 	if w.Code != 200 {
@@ -27,6 +33,7 @@ func TestHello(t *testing.T) {
 }
 
 func TestValidAuth(t *testing.T) {
+	gin.SetMode(gin.TestMode)
 	config, err := conf.LoadConfig()
 	if err != nil {
 		t.Errorf("failed to load config: %v", err)
@@ -35,7 +42,7 @@ func TestValidAuth(t *testing.T) {
 	router := setupRouter(config)
 	w := httptest.NewRecorder()
 
-	token := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.APIUsername, config.APIPassword)))
+	token := config.Base64UserPass()
 	req, _ := http.NewRequest("POST", "/auth", nil)
 	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", token))
 	router.ServeHTTP(w, req)
@@ -46,6 +53,7 @@ func TestValidAuth(t *testing.T) {
 }
 
 func TestValidAuthInvalidCredentials(t *testing.T) {
+	gin.SetMode(gin.TestMode)
 	config, err := conf.LoadConfig()
 	if err != nil {
 		t.Errorf("failed to load config: %v", err)
@@ -65,6 +73,7 @@ func TestValidAuthInvalidCredentials(t *testing.T) {
 }
 
 func TestInvalidAuth(t *testing.T) {
+	gin.SetMode(gin.TestMode)
 	config, err := conf.LoadConfig()
 	if err != nil {
 		t.Errorf("failed to load config: %v", err)
