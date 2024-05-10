@@ -1,8 +1,6 @@
 package api
 
 import (
-	"net/http"
-
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/repo"
 	"github.com/georgemblack/web-api/pkg/types"
@@ -25,33 +23,33 @@ type FirestoreService interface {
 }
 
 func Run() error {
-	config, err := conf.LoadConfig()
+	conf, err := conf.LoadConfig()
 	if err != nil {
 		return types.WrapErr(err, "failed to load config")
 	}
 
 	var firestore FirestoreService
-	firestore, err = repo.NewFirestoreService(config)
+	firestore, err = repo.NewFirestoreService(conf)
 	if err != nil {
 		return types.WrapErr(err, "failed to create firestore service")
 	}
 
-	r := setupRouter(config, firestore)
+	r := setupRouter(conf, firestore)
 
 	return r.Run()
 }
 
-func setupRouter(config conf.Config, firestore FirestoreService) *gin.Engine {
+func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	r := gin.Default()
-	r.Use(headerMiddleware(config))
+	r.Use(headerMiddleware(conf))
 	r.Use(requestIDMiddleware())
 
 	// Auth endpoint, required to fetch a JWT
-	r.POST("/auth", authHandler(config))
+	r.POST("/auth", authHandler(conf))
 
 	// Standard endpoints
 	// All standard endpoints require a valid JWT
-	authorized := r.Group("/", validateJWTMiddleware(config))
+	authorized := r.Group("/", validateJWTMiddleware(conf))
 
 	authorized.GET("/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -59,13 +57,8 @@ func setupRouter(config conf.Config, firestore FirestoreService) *gin.Engine {
 		})
 	})
 
-	authorized.GET("/likes", func(c *gin.Context) {
-		likes, err := firestore.GetLikes()
-		if err != nil {
-			internalServerError(c)
-		}
-		c.JSON(http.StatusOK, likes)
-	})
+	authorized.GET("/likes", getLikesHandler(fs))
+	authorized.GET("/likes/:id", getLikeHandler(fs))
 
 	return r
 }

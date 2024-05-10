@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/base64"
 	"log/slog"
+	"net/http"
 	"strings"
 	"time"
 
@@ -52,5 +53,33 @@ func authHandler(config conf.Config) gin.HandlerFunc {
 			return
 		}
 		c.JSON(200, types.AuthResponse{Token: jwtTokenStr})
+	}
+}
+
+func getLikesHandler(fs FirestoreService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		likes, err := fs.GetLikes()
+		if err != nil {
+			internalServerError(c)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"likes": likes})
+	}
+}
+
+func getLikeHandler(fs FirestoreService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		if id == "" {
+			invalidRequestError(c)
+			return
+		}
+
+		like, err := fs.GetLike(id)
+		if err != nil {
+			internalServerError(c)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"like": like})
 	}
 }

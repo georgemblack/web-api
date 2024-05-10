@@ -20,8 +20,8 @@ func TestHello(t *testing.T) {
 	}
 
 	ctrl := gomock.NewController(t)
-	firestore := testutil.NewMockFirestoreService(ctrl)
-	router := setupRouter(config, firestore)
+	fs := testutil.NewMockFirestoreService(ctrl)
+	router := setupRouter(config, fs)
 
 	// Execute request
 	w := httptest.NewRecorder()

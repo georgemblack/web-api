@@ -16,3 +16,12 @@ func internalServerError(c *gin.Context) {
 	}
 	c.AbortWithStatusJSON(http.StatusInternalServerError, resp)
 }
+
+func invalidRequestError(c *gin.Context) {
+	resp := types.ErrorResponse{
+		Timestamp: time.Now().Format(time.RFC3339),
+		Message:   "Bad request",
+		RequestID: c.GetString("requestId"),
+	}
+	c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+}
