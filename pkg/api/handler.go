@@ -77,6 +77,7 @@ func getLikeHandler(fs FirestoreService) gin.HandlerFunc {
 
 		like, err := fs.GetLike(id)
 		if err != nil {
+			slog.Error(types.WrapErr(err, "failed to get like").Error(), "requestId", c.GetString("requestId"))
 			internalServerError(c)
 			return
 		}

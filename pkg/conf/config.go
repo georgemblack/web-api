@@ -12,7 +12,7 @@ type Config struct {
 	GCloudProjectID       string `json:"gcloudProjectID"`
 	BuildServiceEndpoint  string `json:"buildServiceEndpoint"`
 	AllowedOriginHeader   string `json:"allowedOriginHeader"`
-	FirestoreDatabasename string `json:"firestoreDatabaseName"`
+	FirestoreDatabaseName string `json:"firestoreDatabaseName"`
 	BackupBucketName      string `json:"backupBucketName"`
 	APIUsername           string `json:"apiUsername"`
 	APIPassword           string `json:"apiPassword"`

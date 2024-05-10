@@ -50,13 +50,6 @@ func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	// Standard endpoints
 	// All standard endpoints require a valid JWT
 	authorized := r.Group("/", validateJWTMiddleware(conf))
-
-	authorized.GET("/hello", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "hello",
-		})
-	})
-
 	authorized.GET("/likes", getLikesHandler(fs))
 	authorized.GET("/likes/:id", getLikeHandler(fs))
 

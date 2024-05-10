@@ -33,7 +33,7 @@ func NewFirestoreService(config conf.Config) (*Firestore, error) {
 func (f *Firestore) GetLike(id string) (types.Like, error) {
 	ctx := context.Background()
 	req := firestorepb.GetDocumentRequest{
-		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabaseName, id),
 	}
 	doc, err := f.client.GetDocument(ctx, &req)
 	if err != nil {
@@ -46,7 +46,7 @@ func (f *Firestore) GetLike(id string) (types.Like, error) {
 func (f *Firestore) GetLikes() ([]types.Like, error) {
 	ctx := context.Background()
 	req := firestorepb.ListDocumentsRequest{
-		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 		CollectionId: "web-likes",
 		OrderBy:      "timestamp desc",
 	}
@@ -68,7 +68,7 @@ func (f *Firestore) AddLike(like types.Like) (string, error) {
 	ctx := context.Background()
 	id := uuid.New().String()
 	req := firestorepb.CreateDocumentRequest{
-		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 		CollectionId: "web-likes",
 		DocumentId:   id,
 		Document:     likeToDoc(like),
@@ -84,7 +84,7 @@ func (f *Firestore) AddLike(like types.Like) (string, error) {
 func (f *Firestore) DeleteLike(id string) error {
 	ctx := context.Background()
 	req := firestorepb.DeleteDocumentRequest{
-		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-likes/%s", f.config.GCloudProjectID, f.config.FirestoreDatabaseName, id),
 	}
 	err := f.client.DeleteDocument(ctx, &req)
 	if err != nil {
@@ -97,7 +97,7 @@ func (f *Firestore) DeleteLike(id string) error {
 func (f *Firestore) GetPost(id string) (types.Post, error) {
 	ctx := context.Background()
 	req := firestorepb.GetDocumentRequest{
-		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabaseName, id),
 	}
 	doc, err := f.client.GetDocument(ctx, &req)
 	if err != nil {
@@ -122,7 +122,7 @@ type PostFilters struct {
 func (f *Firestore) GetPosts(filters PostFilters) ([]types.Post, error) {
 	ctx := context.Background()
 	req := firestorepb.ListDocumentsRequest{
-		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 		CollectionId: "web-posts",
 		OrderBy:      "published desc",
 	}
@@ -167,7 +167,7 @@ func (f *Firestore) AddPost(post types.Post) (string, error) {
 	ctx := context.Background()
 	id := uuid.New().String()
 	req := firestorepb.CreateDocumentRequest{
-		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		Parent:       fmt.Sprintf("projects/%s/databases/%s/documents", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 		CollectionId: "web-posts",
 		DocumentId:   id,
 		Document:     postToDoc(post),
@@ -194,7 +194,7 @@ func (f *Firestore) UpdatePost(post types.Post) error {
 
 	req := firestorepb.UpdateDocumentRequest{
 		Document: &firestorepb.Document{
-			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, post.ID),
+			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabaseName, post.ID),
 			Fields: postToDoc(post).Fields,
 		},
 	}
@@ -209,7 +209,7 @@ func (f *Firestore) UpdatePost(post types.Post) error {
 func (f *Firestore) DeletePost(id string) error {
 	ctx := context.Background()
 	req := firestorepb.DeleteDocumentRequest{
-		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabasename, id),
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-posts/%s", f.config.GCloudProjectID, f.config.FirestoreDatabaseName, id),
 	}
 	err := f.client.DeleteDocument(ctx, &req)
 	if err != nil {
@@ -222,7 +222,7 @@ func (f *Firestore) DeletePost(id string) error {
 func (f *Firestore) GetHashList() (types.HashList, error) {
 	ctx := context.Background()
 	req := firestorepb.GetDocumentRequest{
-		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+		Name: fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 	}
 	doc, err := f.client.GetDocument(ctx, &req)
 	if err != nil {
@@ -236,7 +236,7 @@ func (f *Firestore) UpdateHashList(hashList types.HashList) error {
 	ctx := context.Background()
 	req := firestorepb.UpdateDocumentRequest{
 		Document: &firestorepb.Document{
-			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabasename),
+			Name:   fmt.Sprintf("projects/%s/databases/%s/documents/web-metadata/hashes", f.config.GCloudProjectID, f.config.FirestoreDatabaseName),
 			Fields: hashToDoc(hashList).Fields,
 		},
 	}

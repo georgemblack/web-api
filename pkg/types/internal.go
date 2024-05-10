@@ -10,23 +10,23 @@ type HashList struct {
 }
 
 type Post struct {
-	ID                 string
-	Draft              bool
-	Listed             bool
-	Title              string
-	Slug               string
-	Content            string
-	ContentHTML        string
-	ContentHTMLPreview string
-	Tags               []string
-	Published          time.Time
+	ID                 string    `json:"id"`
+	Draft              bool      `json:"draft"`
+	Listed             bool      `json:"listed"`
+	Title              string    `json:"title"`
+	Slug               string    `json:"slug"`
+	Content            string    `json:"content"`
+	ContentHTML        string    `json:"contentHtml"`
+	ContentHTMLPreview string    `json:"contentHtmlPreview"`
+	Tags               []string  `json:"tags"`
+	Published          time.Time `json:"published"`
 }
 
 type Like struct {
-	ID        string
-	Timestamp time.Time
-	Title     string
-	URL       string
+	ID        string    `json:"id"`
+	Timestamp time.Time `json:"timestamp"`
+	Title     string    `json:"title"`
+	URL       string    `json:"url"`
 }
 
 // WrapErr wraps an error and returns a new one
