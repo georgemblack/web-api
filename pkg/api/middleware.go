@@ -4,6 +4,8 @@ import (
 	"strings"
 
 	"github.com/georgemblack/web-api/pkg/conf"
+	"github.com/georgemblack/web-api/pkg/log"
+	"github.com/georgemblack/web-api/pkg/types"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -12,7 +14,7 @@ import (
 // Populates a request context with a randomly generated ID that can be referenced throughout the lifetime of the request.
 func requestIDMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("requestId", uuid.New())
+		c.Set("requestId", uuid.New().String())
 	}
 }
 
@@ -33,8 +35,8 @@ func validateJWTMiddleware(config conf.Config) gin.HandlerFunc {
 		header := c.GetHeader("Authorization")
 		parts := strings.Split(header, " ")
 		if len(parts) != 2 {
-			c.JSON(401, gin.H{"error": "Unauthorized"})
-			c.Abort()
+			log.Warn(c, "faild to parse two parts of 'Authorization' header")
+			unauthorizedError(c)
 			return
 		}
 		token := parts[1]
@@ -44,8 +46,8 @@ func validateJWTMiddleware(config conf.Config) gin.HandlerFunc {
 			return []byte(config.TokenSecret), nil
 		})
 		if err != nil {
-			c.JSON(401, gin.H{"error": "Unauthorized"})
-			c.Abort()
+			log.Warn(c, types.WrapErr(err, "invalid jwt").Error())
+			unauthorizedError(c)
 			return
 		}
 

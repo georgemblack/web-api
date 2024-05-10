@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/base64"
-	"log/slog"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/georgemblack/web-api/pkg/conf"
+	"github.com/georgemblack/web-api/pkg/log"
 	"github.com/georgemblack/web-api/pkg/types"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -18,25 +18,25 @@ func authHandler(config conf.Config) gin.HandlerFunc {
 		header := c.GetHeader("Authorization")
 		tokens := strings.Split(header, " ")
 		if len(tokens) != 2 {
-			slog.Warn("failed to parse two words in 'Authorization' header")
-			c.JSON(401, gin.H{"error": "Invalid Authorization header"})
+			log.Warn(c, "failed to parse two words in 'Authorization' header")
+			unauthorizedError(c)
 			return
 		}
 		decoded, err := base64.StdEncoding.DecodeString(tokens[1])
 		if err != nil {
-			slog.Warn("failed to decode encoded username/password in 'Authorization' header")
-			c.JSON(401, gin.H{"error": "Invalid Authorization header"})
+			log.Warn(c, "failed to decode encoded username/password in 'Authorization' header")
+			unauthorizedError(c)
 			return
 		}
 		credentials := strings.Split(string(decoded), ":")
 		if len(credentials) != 2 {
-			slog.Warn("failed to parse colon-separated username/password in 'Authorization' header")
-			c.JSON(401, gin.H{"error": "Invalid Authorization header"})
+			log.Warn(c, "failed to parse colon-separated username/password in 'Authorization' header")
+			unauthorizedError(c)
 			return
 		}
 		if credentials[0] != config.APIUsername || credentials[1] != config.APIPassword {
-			slog.Warn("invalid credentials provided")
-			c.JSON(401, gin.H{"error": "Invalid credentials"})
+			log.Warn(c, "invalid credentials provided")
+			unauthorizedError(c)
 			return
 		}
 
@@ -48,11 +48,11 @@ func authHandler(config conf.Config) gin.HandlerFunc {
 		jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		jwtTokenStr, err := jwtToken.SignedString([]byte(config.TokenSecret))
 		if err != nil {
-			slog.Error("failed to sign jwt token")
-			c.JSON(500, gin.H{"error": "Internal server error"})
+			log.Error(c, "failed to sign jwt token")
+			internalServerError(c)
 			return
 		}
-		c.JSON(200, types.AuthResponse{Token: jwtTokenStr})
+		c.JSON(http.StatusOK, types.AuthResponse{Token: jwtTokenStr})
 	}
 }
 
@@ -60,6 +60,7 @@ func getLikesHandler(fs FirestoreService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		likes, err := fs.GetLikes()
 		if err != nil {
+			log.Error(c, types.WrapErr(err, "failed to get likes").Error())
 			internalServerError(c)
 			return
 		}
@@ -71,13 +72,14 @@ func getLikeHandler(fs FirestoreService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		if id == "" {
+			log.Warn(c, "'id' param unexpectedly empty")
 			invalidRequestError(c)
 			return
 		}
 
 		like, err := fs.GetLike(id)
 		if err != nil {
-			slog.Error(types.WrapErr(err, "failed to get like").Error(), "requestId", c.GetString("requestId"))
+			log.Error(c, types.WrapErr(err, "failed to get like").Error())
 			internalServerError(c)
 			return
 		}

@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func unauthorizedError(c *gin.Context) {
+	resp := types.ErrorResponse{
+		Timestamp: time.Now().Format(time.RFC3339),
+		Message:   "Unauthorized",
+		RequestID: c.GetString("requestId"),
+	}
+	c.AbortWithStatusJSON(http.StatusUnauthorized, resp)
+}
+
 func internalServerError(c *gin.Context) {
 	resp := types.ErrorResponse{
 		Timestamp: time.Now().Format(time.RFC3339),
