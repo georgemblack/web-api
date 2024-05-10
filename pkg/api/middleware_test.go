@@ -9,6 +9,7 @@ import (
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/testutil"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/mock/gomock"
 )
 
 func TestValidateJWTMiddleware(t *testing.T) {
@@ -18,7 +19,9 @@ func TestValidateJWTMiddleware(t *testing.T) {
 		t.Errorf("failed to load config: %v", err)
 	}
 
-	router := setupRouter(config)
+	ctrl := gomock.NewController(t)
+	firestore := testutil.NewMockFirestoreService(ctrl)
+	router := setupRouter(config, firestore)
 	middleware := validateJWTMiddleware(config)
 
 	// ==================== Test case 1: Valid token ====================

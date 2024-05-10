@@ -6,8 +6,17 @@ import (
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
+// Populates a request context with a randomly generated ID that can be referenced throughout the lifetime of the request.
+func requestIDMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("requestId", uuid.New())
+	}
+}
+
+// Populates a request with required CORS headers.
 func headerMiddleware(config conf.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", config.AllowedOriginHeader)
@@ -17,6 +26,7 @@ func headerMiddleware(config conf.Config) gin.HandlerFunc {
 	}
 }
 
+// Validates a JWT in the request header.
 func validateJWTMiddleware(config conf.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extract JWT token from header

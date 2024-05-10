@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func prep(t *testing.T) (FirestoreService, error) {
+func prep(t *testing.T) (*Firestore, error) {
 	// Configure env to look for google application credentials in correct location
 	t.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/workspaces/web-api/google-application-credentials.json")
 
