@@ -17,8 +17,6 @@ type FirestoreService interface {
 	AddPost(post types.Post) (string, error)
 	UpdatePost(post types.Post) error
 	DeletePost(id string) error
-	GetHashList() (types.HashList, error)
-	UpdateHashList(hashList types.HashList) error
 	Close()
 }
 
@@ -52,6 +50,7 @@ func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	authorized := r.Group("/", validateJWTMiddleware(conf))
 	authorized.GET("/likes", getLikesHandler(fs))
 	authorized.GET("/likes/:id", getLikeHandler(fs))
+	//authorized.GET("/posts", getPostsHandler(fs))
 
 	return r
 }

@@ -1,19 +1,14 @@
 package repo
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/types"
-	"github.com/google/uuid"
 )
 
 func prep(t *testing.T) (*Firestore, error) {
-	// Configure env to look for google application credentials in correct location
-	t.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/workspaces/web-api/google-application-credentials.json")
-
 	config, err := conf.LoadConfig()
 	if err != nil {
 		t.Errorf("failed to load config; %s", err)
@@ -409,40 +404,5 @@ func TestUpdatePost(t *testing.T) {
 	}
 	if actual.Published.Unix() != post.Published.Unix() {
 		t.Errorf("expected published %s, got %s", post.Published, actual.Published)
-	}
-}
-
-func TestGetUpdateHashList(t *testing.T) {
-	service, err := prep(t)
-	if err != nil {
-		t.Errorf("failed to prep test; %s", err)
-	}
-
-	// Create hash list
-	expected := types.HashList{
-		Hashes: map[string]string{
-			fmt.Sprintf("test-%s", uuid.New().String()): uuid.New().String(),
-			fmt.Sprintf("test-%s", uuid.New().String()): uuid.New().String(),
-		},
-	}
-	err = service.UpdateHashList(expected)
-	if err != nil {
-		t.Errorf("failed to update hash list; %s", err)
-	}
-
-	// Read hash list
-	actual, err := service.GetHashList()
-	if err != nil {
-		t.Errorf("failed to get hash list; %s", err)
-	}
-
-	// Compare
-	if len(actual.Hashes) != 2 {
-		t.Errorf("expected 2 hashes in result, got %d", len(actual.Hashes))
-	}
-	for k, v := range expected.Hashes {
-		if actual.Hashes[k] != v {
-			t.Errorf("expected hash '%s', got '%s'", v, actual.Hashes[k])
-		}
 	}
 }

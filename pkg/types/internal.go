@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-type HashList struct {
-	Hashes map[string]string `json:"hashes"`
-}
-
 type Post struct {
 	ID                 string    `json:"id"`
 	Draft              bool      `json:"draft"`
