@@ -42,6 +42,10 @@ func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	r.Use(headerMiddleware(conf))
 	r.Use(requestIDMiddleware())
 
+	r.OPTIONS("/*path", func(c *gin.Context) {
+		c.Status(200)
+	})
+
 	// Auth endpoint, required to fetch a JWT
 	r.POST("/auth", authHandler(conf))
 
