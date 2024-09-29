@@ -8,6 +8,7 @@ import (
 
 	"github.com/georgemblack/web-api/pkg/conf"
 	"github.com/georgemblack/web-api/pkg/log"
+	"github.com/georgemblack/web-api/pkg/repo"
 	"github.com/georgemblack/web-api/pkg/types"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -84,5 +85,38 @@ func getLikeHandler(fs FirestoreService) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"like": like})
+	}
+}
+
+func getPostsHandler(fs FirestoreService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		filters := repo.PostFilters{}
+		published := c.Query("published")
+		listed := c.Query("listed")
+
+		t := true
+		f := false
+		if published == "true" {
+			filters.Published = &t
+		}
+		if published == "false" {
+			f := false
+			filters.Published = &f
+		}
+		if listed == "true" {
+
+			filters.Listed = &t
+		}
+		if listed == "false" {
+			filters.Listed = &f
+		}
+
+		posts, err := fs.GetPosts(filters)
+		if err != nil {
+			log.Error(c, types.WrapErr(err, "failed to get posts").Error())
+			internalServerError(c)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"posts": posts})
 	}
 }
