@@ -1,10 +1,9 @@
-FROM node:20 AS build-env
-ADD . /build
-WORKDIR /build
-RUN yarn && yarn build
+FROM golang:1.21 as build-env
+WORKDIR /go/src/app
+ADD . /go/src/app
+RUN go build ./cmd/server/main.go
 
-FROM node:20-alpine
-ENV NODE_ENV=production
-COPY --from=build-env /build /app
+FROM golang:1.21
 WORKDIR /app
-CMD ["yarn", "start"]
+COPY --from=build-env /go/src/app/main ./main
+CMD ["/app/main"]
