@@ -50,7 +50,7 @@ func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	authorized := r.Group("/", validateJWTMiddleware(conf))
 	authorized.GET("/likes", getLikesHandler(fs))
 	authorized.GET("/likes/:id", getLikeHandler(fs))
-	//authorized.GET("/posts", getPostsHandler(fs))
+	authorized.GET("/posts", getPostsHandler(fs))
 
 	return r
 }
