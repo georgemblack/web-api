@@ -100,11 +100,9 @@ func getPostsHandler(fs FirestoreService) gin.HandlerFunc {
 			filters.Published = &t
 		}
 		if published == "false" {
-			f := false
 			filters.Published = &f
 		}
 		if listed == "true" {
-
 			filters.Listed = &t
 		}
 		if listed == "false" {
@@ -118,5 +116,31 @@ func getPostsHandler(fs FirestoreService) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"posts": posts})
+	}
+}
+
+func updatePostHandler(fs FirestoreService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		if id == "" {
+			log.Warn(c, "'id' param unexpectedly empty")
+			invalidRequestError(c)
+			return
+		}
+
+		var post types.Post
+		if err := c.ShouldBindJSON(&post); err != nil {
+			log.Warn(c, types.WrapErr(err, "failed to bind json").Error())
+			invalidRequestError(c)
+			return
+		}
+
+		post.ID = id
+		if err := fs.UpdatePost(post); err != nil {
+			log.Error(c, types.WrapErr(err, "failed to update post").Error())
+			internalServerError(c)
+			return
+		}
+		c.Status(http.StatusOK)
 	}
 }

@@ -55,6 +55,7 @@ func setupRouter(conf conf.Config, fs FirestoreService) *gin.Engine {
 	authorized.GET("/likes", getLikesHandler(fs))
 	authorized.GET("/likes/:id", getLikeHandler(fs))
 	authorized.GET("/posts", getPostsHandler(fs))
+	authorized.PUT("/posts/:id", updatePostHandler(fs))
 
 	return r
 }
